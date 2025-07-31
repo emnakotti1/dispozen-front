@@ -5,9 +5,7 @@ const { t } = useI18n();
 </script>
 
 <template>
-  <h1 class="bg-red-500 text-3xl font-bold underline">
-    {{ t("message.hello") }}
-  </h1>
+  <router-view />
 </template>
 
 <style scoped></style>
