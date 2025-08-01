@@ -39,6 +39,60 @@ const { t } = useI18n()
 
         <div class="mt-10">
           <form action="#" method="POST" class="space-y-6">
+           <div>
+              <label
+                for="email"
+                class="block text-sm font-medium text-gray-900"
+              >
+                {{ t('message.auth.registration.email') }}
+              </label>
+              <div class="mt-2">
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autocomplete="email"
+                  required
+                  class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                />
+              </div>
+            </div>
+           <div>
+              <label
+                for="email"
+                class="block text-sm font-medium text-gray-900"
+              >
+                {{ t('message.auth.registration.email') }}
+              </label>
+              <div class="mt-2">
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autocomplete="email"
+                  required
+                  class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                />
+              </div>
+            </div>
+           <div>
+              <label
+                for="email"
+                class="block text-sm font-medium text-gray-900"
+              >
+                {{ t('message.auth.registration.email') }}
+              </label>
+              <div class="mt-2">
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autocomplete="email"
+                  required
+                  class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                />
+              </div>
+            </div>
             <div>
               <label
                 for="email"

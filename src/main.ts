@@ -6,6 +6,7 @@ import { createI18n } from 'vue-i18n'
 import fr from '../locales/fr.json'
 import en from '../locales/en.json'
 import { router } from './router'
+import { VueQueryPlugin } from '@tanstack/vue-query'
 
 const messages = { fr, en }
 
@@ -19,7 +20,8 @@ const i18n = createI18n({
   messages,
 })
 
-const app = createApp(App)
-app.use(router)
-app.use(i18n)
-app.mount('#app')
+const app = createApp(App);
+app.use(router);
+app.use(i18n);
+app.use(VueQueryPlugin)
+app.mount("#app");
