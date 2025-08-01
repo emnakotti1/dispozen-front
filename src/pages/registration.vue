@@ -9,7 +9,6 @@ const { t } = useI18n()
 
 <template>
   <div class="flex min-h-screen">
-    <!-- Partie gauche : formulaire -->
     <div
       class="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24"
     >
