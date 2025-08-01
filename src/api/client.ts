@@ -1,10 +1,10 @@
 // frontend/src/api/client.ts
 
-const API_BASE_URL = '/'
+const API_BASE_URL = ''
 
 export async function apiFetch<T>(
   endpoint: string,
-  options?: RequestInit
+  options?: RequestInit,
 ): Promise<T> {
   const res = await fetch(`${API_BASE_URL}${endpoint}`, {
     headers: {
