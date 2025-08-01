@@ -2,6 +2,33 @@
   "message": {
     "hello": "Bonjour",
     "welcome": "Bienvenue",
-    "bye": "Au revoir"
+    "bye": "Au revoir",
+    "auth": {
+      "login": {
+        "title": "Connexion à votre espace",
+        "subtitle": "Vous n'avez pas encore de compte ?",
+        "createAccount": "Créez un compte",
+        "email": "Adresse e-mail",
+        "password": "Mot de passe",
+        "rememberMe": "Se souvenir de moi",
+        "forgotPassword": "Mot de passe oublié ?",
+        "signIn": "Se connecter",
+        "orContinueWith": "Ou continuer avec",
+        "continueWithGoogle": "Continuer avec Google"
+      },
+      "registration": {
+        "title": "Créer un nouveau compte",
+        "subtitle": "Vous avez déjà un compte ?",
+        "signIn": "Connectez-vous",
+        "email": "Adresse e-mail",
+        "password": "Mot de passe",
+        "confirmPassword": "Confirmer le mot de passe",
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "createAccount": "Créer le compte",
+        "orContinueWith": "Ou continuer avec",
+        "continueWithGoogle": "Continuer avec Google"
+      }
+    }
   }
 }

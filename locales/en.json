@@ -2,6 +2,33 @@
   "message": {
     "hello": "Hello",
     "welcome": "Welcome",
-    "bye": "Goodbye"
+    "bye": "Goodbye",
+    "auth": {
+      "login": {
+        "title": "Sign in to your account",
+        "subtitle": "Don't have an account yet?",
+        "createAccount": "Create an account",
+        "email": "Email address",
+        "password": "Password",
+        "rememberMe": "Remember me",
+        "forgotPassword": "Forgot your password?",
+        "signIn": "Sign in",
+        "orContinueWith": "Or continue with",
+        "continueWithGoogle": "Continue with Google"
+      },
+      "registration": {
+        "title": "Create a new account",
+        "subtitle": "Already have an account?",
+        "signIn": "Sign in",
+        "email": "Email address",
+        "password": "Password",
+        "confirmPassword": "Confirm password",
+        "firstName": "First name",
+        "lastName": "Last name",
+        "createAccount": "Create account",
+        "orContinueWith": "Or continue with",
+        "continueWithGoogle": "Continue with Google"
+      }
+    }
   }
 }

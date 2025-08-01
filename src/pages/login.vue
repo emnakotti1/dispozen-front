@@ -1,23 +1,40 @@
 <script setup>
-import { RouterLink } from "vue-router";
-import logo from "../assets/logo.png";
+import { RouterLink } from 'vue-router'
+import logo from '../assets/logo.png'
+import { useI18n } from 'vue-i18n'
+import LanguageSelector from '../components/LanguageSelector.vue'
+
+const { t } = useI18n()
 </script>
 
 <template>
   <div class="flex min-h-screen">
     <!-- Partie gauche (formulaire) -->
-    <div class="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
+    <div
+      class="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24"
+    >
       <div class="mx-auto w-full max-w-sm lg:w-96">
         <!-- Logo et titre -->
         <div class="text-center">
-          <img class="h-16 w-auto mx-auto" :src="logo" alt="Logo de l'entreprise" />
+          <!-- Sélecteur de langue en haut à droite -->
+          <div class="flex justify-end mb-4">
+            <LanguageSelector />
+          </div>
+          <img
+            class="h-16 w-auto mx-auto"
+            :src="logo"
+            alt="Logo de l'entreprise"
+          />
           <h2 class="mt-8 text-2xl font-bold tracking-tight text-gray-900">
-            Connexion à votre espace
+            {{ t('message.auth.login.title') }}
           </h2>
           <p class="mt-2 text-sm text-gray-500">
-            Vous n’avez pas encore de compte ?
-            <RouterLink to="/register" class="font-semibold text-indigo-600 hover:text-indigo-500">
-              Créez un compte
+            {{ t('message.auth.login.subtitle') }}
+            <RouterLink
+              to="/register"
+              class="font-semibold text-indigo-600 hover:text-indigo-500"
+            >
+              {{ t('message.auth.login.createAccount') }}
             </RouterLink>
           </p>
         </div>
@@ -26,7 +43,11 @@ import logo from "../assets/logo.png";
         <div class="mt-10">
           <form action="#" method="POST" class="space-y-6">
             <div>
-              <label for="email" class="block text-sm font-medium text-gray-900">Adresse e-mail</label>
+              <label
+                for="email"
+                class="block text-sm font-medium text-gray-900"
+                >{{ t('message.auth.login.email') }}</label
+              >
               <input
                 type="email"
                 id="email"
@@ -38,7 +59,11 @@ import logo from "../assets/logo.png";
             </div>
 
             <div>
-              <label for="password" class="block text-sm font-medium text-gray-900">Mot de passe</label>
+              <label
+                for="password"
+                class="block text-sm font-medium text-gray-900"
+                >{{ t('message.auth.login.password') }}</label
+              >
               <input
                 type="password"
                 id="password"
@@ -57,12 +82,17 @@ import logo from "../assets/logo.png";
                   type="checkbox"
                   class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
                 />
-                <label for="remember-me" class="text-sm text-gray-900">Se souvenir de moi</label>
+                <label for="remember-me" class="text-sm text-gray-900">{{
+                  t('message.auth.login.rememberMe')
+                }}</label>
               </div>
 
               <div class="text-sm">
-                <a href="#" class="font-semibold text-indigo-600 hover:text-indigo-500">
-                  Mot de passe oublié ?
+                <a
+                  href="#"
+                  class="font-semibold text-indigo-600 hover:text-indigo-500"
+                >
+                  {{ t('message.auth.login.forgotPassword') }}
                 </a>
               </div>
             </div>
@@ -72,7 +102,7 @@ import logo from "../assets/logo.png";
                 type="submit"
                 class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline focus:ring-2 focus:ring-indigo-600"
               >
-                Se connecter
+                {{ t('message.auth.login.signIn') }}
               </button>
             </div>
           </form>
@@ -85,7 +115,9 @@ import logo from "../assets/logo.png";
               <div class="w-full border-t border-gray-200"></div>
             </div>
             <div class="relative flex justify-center text-sm">
-              <span class="bg-white px-4 text-gray-500">Ou continuer avec</span>
+              <span class="bg-white px-4 text-gray-500">{{
+                t('message.auth.login.orContinueWith')
+              }}</span>
             </div>
           </div>
 
@@ -100,7 +132,7 @@ import logo from "../assets/logo.png";
                   d="M21.35 11.1h-9.17v2.92h5.35c-.23 1.28-1.44 3.76-5.35 3.76-3.23 0-5.87-2.69-5.87-6s2.64-6 5.87-6c1.84 0 3.07.79 3.78 1.48l2.59-2.5C17.1 2.9 14.9 2 12 2 6.48 2 2 6.48 2 12s4.48 10 10 10c5.71 0 9.46-4.04 9.46-9.7 0-.66-.11-1.2-.23-1.7z"
                 />
               </svg>
-              <span>Continuer avec Google</span>
+              <span>{{ t('message.auth.login.continueWithGoogle') }}</span>
             </a>
           </div>
         </div>
