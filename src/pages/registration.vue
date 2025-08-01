@@ -39,58 +39,58 @@ const { t } = useI18n()
 
         <div class="mt-10">
           <form action="#" method="POST" class="space-y-6">
-           <div>
+            <div>
               <label
-                for="email"
-                class="block text-sm font-medium text-gray-900"
+              for="firstName"
+              class="block text-sm font-medium text-gray-900"
               >
-                {{ t('message.auth.registration.email') }}
+              {{ t('message.auth.registration.firstName') }}
               </label>
               <div class="mt-2">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autocomplete="email"
-                  required
-                  class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-600"
-                />
+              <input
+                id="firstName"
+                name="firstName"
+                type="text"
+                autocomplete="given-name"
+                required
+                class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-600"
+              />
               </div>
             </div>
-           <div>
+            <div>
               <label
-                for="email"
-                class="block text-sm font-medium text-gray-900"
+              for="lastName"
+              class="block text-sm font-medium text-gray-900"
               >
-                {{ t('message.auth.registration.email') }}
+              {{ t('message.auth.registration.lastName') }}
               </label>
               <div class="mt-2">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autocomplete="email"
-                  required
-                  class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-600"
-                />
+              <input
+                id="lastName"
+                name="lastName"
+                type="text"
+                autocomplete="family-name"
+                required
+                class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-600"
+              />
               </div>
             </div>
-           <div>
+            <div>
               <label
-                for="email"
-                class="block text-sm font-medium text-gray-900"
+              for="phoneNumber"
+              class="block text-sm font-medium text-gray-900"
               >
-                {{ t('message.auth.registration.email') }}
+              {{ t('message.auth.registration.phoneNumber') }}
               </label>
               <div class="mt-2">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autocomplete="email"
-                  required
-                  class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-600"
-                />
+              <input
+                id="phoneNumber"
+                name="phoneNumber"
+                type="tel"
+                autocomplete="tel"
+                required
+                class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-600"
+              />
               </div>
             </div>
             <div>

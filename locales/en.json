@@ -27,7 +27,8 @@
         "lastName": "Last name",
         "createAccount": "Create account",
         "orContinueWith": "Or continue with",
-        "continueWithGoogle": "Continue with Google"
+        "continueWithGoogle": "Continue with Google",
+        "phoneNumber": "Phone number"
       }
     }
   }
