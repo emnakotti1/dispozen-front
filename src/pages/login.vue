@@ -22,7 +22,7 @@ function handleSubmit(e: Event) {
       onSuccess: (data) => {
          localStorage.setItem('accessToken', data.access_token)
 
-        router.push("/"); // Redirige vers la page d'accueil ou dashboard
+        router.push("/providers"); // Redirige vers la page d'accueil ou dashboard
       },
     }
   );
