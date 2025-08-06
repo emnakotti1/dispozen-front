@@ -1,6 +1,7 @@
 import { apiFetch } from './client'
 
 export type Provider = {
+  id:string
   firstName: string
   lastName: string
   phoneNumber: string
@@ -10,6 +11,7 @@ export type Provider = {
   city: string
 }
 
-export function getProviders() {
-  return apiFetch<Provider[]>('/users/providers')
+export function getProviders(page = 1, limit = 6) {
+  return apiFetch<{ data: Provider[] }>(`/users/providers?page=${page}&limit=${limit}`)
+    .then(response => response.data)
 }
