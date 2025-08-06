@@ -33,6 +33,19 @@
         "continueWithGoogle": "Continuer avec Google",
         "phoneNumber": "Numéro de téléphone"
       }
+    },
+    "navigation": {
+      "home": "Accueil",
+      "about": "À propos",
+      "services": "Services",
+      "contact": "Contact",
+      "login": "Connexion"
     }
+  },
+  "footer": {
+    "copyright": "© 2025 DispZen. Tous droits réservés.",
+    "legal": "Mentions légales",
+    "contact": "Contact",
+    "linkedin": "LinkedIn"
   }
 }

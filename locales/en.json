@@ -30,6 +30,19 @@
         "continueWithGoogle": "Continue with Google",
         "phoneNumber": "Phone number"
       }
+    },
+    "navigation": {
+      "home": "Home",
+      "about": "About",
+      "services": "Services",
+      "contact": "Contact",
+      "login": "Log in"
+    },
+    "footer": {
+      "copyright": "© 2025 DispZen. All rights reserved.",
+      "legal": "Legal Notice",
+      "contact": "Contact",
+      "linkedin": "LinkedIn"
     }
   }
 }
