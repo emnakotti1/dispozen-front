@@ -44,10 +44,12 @@
       "linkedin": "LinkedIn"
     },
     "common": {
-  "navigation": {
-    "services": "Our Services"
-  }
-}
-
+      "navigation": {
+        "services": "Our Services"
+      },
+      "button": {
+        "book": "Book"
+      }
+    }
   }
 }

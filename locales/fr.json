@@ -1,6 +1,9 @@
 {
   "common": {
-    "loading": "Chargement..."
+    "loading": "Chargement...",
+    "navigation": {
+      "services": "Nos Services"
+    }
   },
   "message": {
     "hello": "Bonjour",
@@ -35,7 +38,6 @@
       }
     },
     "navigation": {
-      
       "calendar": "Calendrier",
       "services": "Services",
       "contact": "Contact",
@@ -47,11 +49,8 @@
     "legal": "Mentions légales",
     "contact": "Contact",
     "linkedin": "LinkedIn"
-  },"common": {
-  "navigation": {
-    "services": "Nos Services"
+  },
+  "button": {
+    "book": "Réserver"
   }
-}
-
-
 }

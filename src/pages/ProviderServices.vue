@@ -50,7 +50,9 @@
                   type="button"
                   class="rounded bg-indigo-600 text-white px-3 py-1 text-sm font-semibold shadow hover:bg-indigo-700"
                 >
-                  Réserver
+          {{ t('button.book') }}
+
+
                 </button>
               </td>
             </tr>
@@ -68,9 +70,12 @@
 import { useRoute } from 'vue-router'
 import { useProviderServicesQuery } from '../hooksQuerie/useProviderServicesQuery'
 import arriere from '../assets/444.jpg'
+import { useI18n } from "vue-i18n";
 
 const route = useRoute()
 const providerId = route.params.id as string
+const { t } = useI18n();
+
 
 const { services, isLoading, isError } = useProviderServicesQuery(providerId)
 </script>
