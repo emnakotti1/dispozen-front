@@ -1,7 +1,13 @@
 <template>
-  <div class="min-h-screen bg-white py-10 px-6 max-w-7xl mx-auto">
+  <div class="relative min-h-screen py-10 px-6 max-w-7xl mx-auto">
+    <!-- Image d'arrière-plan fixe -->
+   <div
+      class="fixed inset-0 bg-cover bg-center -z-10"
+      :style="{ backgroundImage: `url(${arriere})` }"
+    ></div>
+
     <!-- Search Bar -->
-    <div class="max-w-4xl mx-auto mb-8">
+    <div class="max-w-4xl mx-auto mb-8 relative z-10">
       <input
         v-model="searchQuery"
         type="text"
@@ -11,17 +17,20 @@
     </div>
 
     <!-- Status Messages -->
-    <div v-if="isLoading" class="text-center">Chargement...</div>
-    <div v-else-if="isError" class="text-center text-red-500">
+    <div v-if="isLoading" class="text-center relative z-10">Chargement...</div>
+    <div v-else-if="isError" class="text-center text-red-500 relative z-10">
       Erreur lors du chargement.
     </div>
 
     <!-- Providers List -->
-    <div v-else class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+    <div
+      v-else
+      class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 relative z-10"
+    >
       <div
         v-for="(provider, index) in filteredProviders"
         :key="provider.id ?? index"
-        class="rounded-2xl shadow hover:shadow-lg transition p-4 border border-gray-200"
+        class="rounded-2xl shadow hover:shadow-lg transition p-4 border border-gray-200 bg-white"
       >
         <!-- Image -->
         <img
@@ -40,12 +49,12 @@
         <!-- Actions Row -->
         <div class="mt-4 flex items-center justify-between">
           <!-- Button -->
-          <button
-            type="button"
-            class="rounded bg-indigo-50 px-3 py-1 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
-          >
-            {{ t("common.navigation.services") }}
-          </button>
+          <RouterLink
+  :to="`/providers/${provider.id}/services`"
+  class="rounded bg-indigo-50 px-3 py-1 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
+>
+  {{ t("common.navigation.services") }}
+</RouterLink>
 
           <!-- Contact Icons -->
           <div class="flex items-center gap-4 text-gray-600">
@@ -62,7 +71,7 @@
 
     <!-- Pagination Controls -->
     <nav
-      class="flex items-center justify-between border-t border-gray-200 px-4 sm:px-0 mt-8"
+      class="flex items-center justify-between border-t border-gray-200 px-4 sm:px-0 mt-8 relative z-10"
     >
       <button
         @click="prevPage"
@@ -97,6 +106,7 @@ import { useI18n } from "vue-i18n";
 import { ArrowLongLeftIcon, ArrowLongRightIcon } from "@heroicons/vue/20/solid";
 import { PhoneIcon, EnvelopeIcon } from "@heroicons/vue/24/solid";
 import { useProvidersQuery } from "../hooksQuerie/useProvidersQuery";
+import arriere from '../assets/444.jpg'
 
 const { t } = useI18n();
 const searchQuery = ref("");
