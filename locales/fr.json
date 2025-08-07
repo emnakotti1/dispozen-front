@@ -35,8 +35,8 @@
       }
     },
     "navigation": {
-      "home": "Accueil",
-      "about": "À propos",
+      
+      "calendar": "Calendrier",
       "services": "Services",
       "contact": "Contact",
       "login": "Connexion"
@@ -47,5 +47,11 @@
     "legal": "Mentions légales",
     "contact": "Contact",
     "linkedin": "LinkedIn"
+  },"common": {
+  "navigation": {
+    "services": "Nos Services"
   }
+}
+
+
 }

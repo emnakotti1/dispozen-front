@@ -1,7 +1,7 @@
 import { apiFetch } from './client'
 
 export type Provider = {
-  id:string
+  id: string
   firstName: string
   lastName: string
   phoneNumber: string
@@ -9,6 +9,7 @@ export type Provider = {
   imageUrl: string
   postalCode: string
   city: string
+  email:string
 }
 
 export function getProviders(page = 1, limit = 6) {

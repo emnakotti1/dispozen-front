@@ -90,8 +90,8 @@ const { t } = useI18n();
 const mobileMenuOpen = ref(false);
 
 const navigation = computed(() => [
-  { name: t("message.navigation.home"), href: "#" },
-  { name: t("message.navigation.about"), href: "#" },
+ 
+  { name: t("message.navigation.calendar"), href: "#" },
   { name: t("message.navigation.services"), href: "#" },
   { name: t("message.navigation.contact"), href: "#" },
 ]);

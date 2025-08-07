@@ -32,8 +32,7 @@
       }
     },
     "navigation": {
-      "home": "Home",
-      "about": "About",
+      "calendar": "Calendar",
       "services": "Services",
       "contact": "Contact",
       "login": "Log in"
@@ -43,6 +42,12 @@
       "legal": "Legal Notice",
       "contact": "Contact",
       "linkedin": "LinkedIn"
-    }
+    },
+    "common": {
+  "navigation": {
+    "services": "Our Services"
+  }
+}
+
   }
 }
