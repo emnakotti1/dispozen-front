@@ -259,9 +259,13 @@ const {
 } = useCancelAppointment()
 
 // Watch pour surveiller les changements dans appointments
-watch(appointments, (newAppointments) => {
-  console.log('Appointments updated:', newAppointments)
-}, { deep: true })
+watch(
+  appointments,
+  newAppointments => {
+    console.log('Appointments updated:', newAppointments)
+  },
+  { deep: true },
+)
 
 // Fonction pour confirmer et annuler un rendez-vous
 const handleCancelAppointment = (

@@ -108,18 +108,21 @@ export function useCancelAppointment() {
   const mutation = useMutation({
     mutationFn: cancelAppointment,
     onSuccess: async (_, appointmentId) => {
-      console.log('Appointment cancelled successfully, updating cache for user:', currentUser.value?.id)
-      
+      console.log(
+        'Appointment cancelled successfully, updating cache for user:',
+        currentUser.value?.id,
+      )
+
       const queryKey = ['appointments', currentUser.value?.id]
-      
+
       // Mettre à jour directement les données dans le cache
       queryClient.setQueryData(queryKey, (oldData: any) => {
         if (!oldData) return oldData
-        
-        return oldData.map((appointment: any) => 
-          appointment.id === appointmentId 
+
+        return oldData.map((appointment: any) =>
+          appointment.id === appointmentId
             ? { ...appointment, status: 'cancelled' }
-            : appointment
+            : appointment,
         )
       })
 
