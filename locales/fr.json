@@ -124,7 +124,8 @@
     },
     "actions": {
       "modify": "Modifier",
-      "cancel": "Annuler"
+      "cancel": "Annuler",
+      "cancelling": "Annulation..."
     },
     "noAppointments": {
       "title": "Aucun rendez-vous",

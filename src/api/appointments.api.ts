@@ -14,7 +14,8 @@ export const AppointmentStatus = {
   CANCELLED: 'cancelled',
 } as const
 
-export type AppointmentStatus = typeof AppointmentStatus[keyof typeof AppointmentStatus]
+export type AppointmentStatus =
+  (typeof AppointmentStatus)[keyof typeof AppointmentStatus]
 
 export interface Appointment {
   id: string
@@ -87,4 +88,10 @@ export async function getAppointments(
 
 export async function getAppointmentById(id: string): Promise<Appointment> {
   return apiFetch<Appointment>(`/appointment/${id}`)
+}
+
+export async function cancelAppointment(id: string): Promise<string> {
+  return apiFetch<string>(`/appointment/cancel/${id}`, {
+    method: 'PATCH',
+  })
 }

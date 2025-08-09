@@ -123,7 +123,8 @@
       },
       "actions": {
         "modify": "Modify",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "cancelling": "Cancelling..."
       },
       "noAppointments": {
         "title": "No appointments",

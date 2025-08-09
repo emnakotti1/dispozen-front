@@ -2,6 +2,7 @@ import { ref, computed } from 'vue'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 import {
   createAppointment,
+  cancelAppointment,
   getAppointments,
   type CreateAppointmentDto,
 } from '../api/appointments.api'
@@ -72,19 +73,88 @@ export function useCreateAppointment() {
 export function useAppointments() {
   const { currentUser } = useAuth()
 
+  const queryKey = computed(() => ['appointments', currentUser.value?.id])
+
   const {
     data: appointments,
     isLoading,
     isError,
+    refetch,
   } = useQuery({
-    queryKey: ['appointments', currentUser.value?.id],
-    queryFn: () => getAppointments(currentUser.value!.id),
-    enabled: !!currentUser.value?.id,
+    queryKey,
+    queryFn: () => {
+      console.log('Fetching appointments for user:', currentUser.value?.id)
+      return getAppointments(currentUser.value!.id)
+    },
+    enabled: computed(() => !!currentUser.value?.id),
+    staleTime: 0, // Consider data stale immediately
+    refetchOnWindowFocus: true, // Refetch when window gains focus
   })
 
   return {
     appointments,
     isLoading,
     isError,
+    refetch,
+  }
+}
+
+export function useCancelAppointment() {
+  const queryClient = useQueryClient()
+  const { currentUser } = useAuth()
+  const successMessage = ref('')
+  const showSuccess = ref(false)
+
+  const mutation = useMutation({
+    mutationFn: cancelAppointment,
+    onSuccess: async (_, appointmentId) => {
+      console.log('Appointment cancelled successfully, updating cache for user:', currentUser.value?.id)
+      
+      const queryKey = ['appointments', currentUser.value?.id]
+      
+      // Mettre à jour directement les données dans le cache
+      queryClient.setQueryData(queryKey, (oldData: any) => {
+        if (!oldData) return oldData
+        
+        return oldData.map((appointment: any) => 
+          appointment.id === appointmentId 
+            ? { ...appointment, status: 'cancelled' }
+            : appointment
+        )
+      })
+
+      // Invalider les requêtes pour s'assurer que les données sont fraîches
+      await queryClient.invalidateQueries({
+        queryKey,
+      })
+
+      console.log('Cache updated and queries invalidated')
+
+      // Afficher un message de succès
+      successMessage.value = 'Rendez-vous annulé avec succès'
+      showSuccess.value = true
+
+      // Masquer le message après 3 secondes
+      setTimeout(() => {
+        showSuccess.value = false
+      }, 3000)
+    },
+    onError: error => {
+      console.error('Error cancelling appointment:', error)
+    },
+  })
+
+  const cancelAppointmentMutation = (appointmentId: string) => {
+    console.log('Cancelling appointment:', appointmentId)
+    mutation.mutate(appointmentId)
+  }
+
+  return {
+    cancelAppointment: cancelAppointmentMutation,
+    isLoading: computed(() => mutation.isPending),
+    isError: computed(() => mutation.isError),
+    error: computed(() => mutation.error),
+    successMessage: computed(() => successMessage.value),
+    showSuccess: computed(() => showSuccess.value),
   }
 }

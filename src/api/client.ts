@@ -23,5 +23,12 @@ export async function apiFetch<T>(
     throw new Error(error || 'Erreur API')
   }
 
-  return res.json()
+  // Vérifier si la réponse contient du JSON
+  const contentType = res.headers.get('content-type')
+  if (contentType?.includes('application/json')) {
+    return res.json()
+  } else {
+    // Si ce n'est pas du JSON, retourner le texte
+    return res.text() as T
+  }
 }

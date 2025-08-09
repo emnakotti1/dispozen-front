@@ -55,7 +55,7 @@
           <div>
             <div>{{ t('booking.error') }}</div>
             <div v-if="error" class="text-sm mt-1 opacity-90">
-              {{ error.value?.message || error.value }}
+              {{ error?.message || error }}
             </div>
           </div>
         </div>
@@ -316,7 +316,7 @@ const submitBooking = () => {
 onMounted(() => {
   // Réinitialiser les erreurs au montage du composant
   resetErrors()
-  
+
   // Vérifier si les paramètres requis sont présents
   if (!providerId || !serviceId) {
     console.error('Provider ID and Service ID are required')

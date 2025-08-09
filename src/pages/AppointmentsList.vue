@@ -22,6 +22,23 @@
         </p>
       </div>
 
+      <!-- Message de succès -->
+      <div
+        v-if="showSuccess"
+        class="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg"
+      >
+        <div class="flex items-center">
+          <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              fill-rule="evenodd"
+              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+          {{ successMessage }}
+        </div>
+      </div>
+
       <!-- Loading / Error -->
       <div v-if="isLoading" class="text-center text-gray-500">
         {{ t('common.loading') }}
@@ -48,11 +65,11 @@
                 <span
                   :class="[
                     'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
-                    appointment.status === 'confirmed' 
+                    appointment.status === 'confirmed'
                       ? 'bg-green-100 text-green-800'
                       : appointment.status === 'pending'
                       ? 'bg-yellow-100 text-yellow-800'
-                      : 'bg-red-100 text-red-800'
+                      : 'bg-red-100 text-red-800',
                   ]"
                 >
                   {{ getStatusText(appointment.status) }}
@@ -76,7 +93,11 @@
                       d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                     ></path>
                   </svg>
-                  {{ appointment.calendar ? formatDate(appointment.calendar.date) : 'Date non définie' }}
+                  {{
+                    appointment.calendar
+                      ? formatDate(appointment.calendar.date)
+                      : 'Date non définie'
+                  }}
                 </div>
 
                 <div class="flex items-center">
@@ -94,8 +115,8 @@
                     ></path>
                   </svg>
                   <span v-if="appointment.calendar">
-                    {{ appointment.calendar.startTime }} -
-                    {{ appointment.calendar.endTime }}
+                    {{ formatTime(appointment.calendar.startTime) }} -
+                    {{ formatTime(appointment.calendar.endTime) }}
                   </span>
                   <span v-else>Heure non définie</span>
                 </div>
@@ -143,7 +164,7 @@
               >
                 {{ appointment.service.description }}
               </p>
-              
+
               <p
                 v-if="appointment.notes"
                 class="mt-2 text-sm text-gray-600 italic"
@@ -160,10 +181,21 @@
                 {{ t('appointments.actions.modify') }}
               </button>
               <button
+                v-if="appointment.status !== 'cancelled'"
                 type="button"
-                class="px-4 py-2 text-sm font-medium text-red-700 bg-white border border-red-300 rounded-md shadow-sm hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500"
+                :disabled="isCancelling.value"
+                @click="
+                  handleCancelAppointment(
+                    appointment.id,
+                    appointment.service.name,
+                  )
+                "
+                class="px-4 py-2 text-sm font-medium text-red-700 bg-white border border-red-300 rounded-md shadow-sm hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {{ t('appointments.actions.cancel') }}
+                <span v-if="isCancelling">{{
+                  t('appointments.actions.cancelling')
+                }}</span>
+                <span v-else>{{ t('appointments.actions.cancel') }}</span>
               </button>
             </div>
           </div>
@@ -206,13 +238,43 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { useAppointments } from '../hooksQuerie/appointments'
+import { watch } from 'vue'
+import {
+  useAppointments,
+  useCancelAppointment,
+} from '../hooksQuerie/appointments'
 import arriere from '../assets/333.jpg'
 
 const { t } = useI18n()
 
 // Hook pour récupérer les rendez-vous
 const { appointments, isLoading, isError } = useAppointments()
+
+// Hook pour annuler un rendez-vous
+const {
+  cancelAppointment,
+  isLoading: isCancelling,
+  successMessage,
+  showSuccess,
+} = useCancelAppointment()
+
+// Watch pour surveiller les changements dans appointments
+watch(appointments, (newAppointments) => {
+  console.log('Appointments updated:', newAppointments)
+}, { deep: true })
+
+// Fonction pour confirmer et annuler un rendez-vous
+const handleCancelAppointment = (
+  appointmentId: string,
+  serviceName: string,
+) => {
+  const confirmed = confirm(
+    `Êtes-vous sûr de vouloir annuler le rendez-vous pour "${serviceName}" ?`,
+  )
+  if (confirmed) {
+    cancelAppointment(appointmentId)
+  }
+}
 
 // Fonction pour formater la date
 const formatDate = (dateString: string) => {
@@ -223,6 +285,13 @@ const formatDate = (dateString: string) => {
     month: 'long',
     day: 'numeric',
   })
+}
+
+// Fonction pour formater l'heure (enlever les secondes)
+const formatTime = (timeString: string) => {
+  if (!timeString) return ''
+  // Si le format est HH:MM:SS, on enlève les secondes
+  return timeString.substring(0, 5) // Garde seulement HH:MM
 }
 
 // Fonction pour obtenir le texte du statut
