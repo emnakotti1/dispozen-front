@@ -1,4 +1,8 @@
 {
+  "navigation": {
+    "providers": "Providers",
+    "appointments": "My Appointments"
+  },
   "message": {
     "hello": "Hello",
     "welcome": "Welcome",
@@ -81,6 +85,50 @@
           "price": "Price",
           "action": "Action"
         }
+      }
+    },
+    "booking": {
+      "title": "Book an Appointment",
+      "subtitle": "Choose the date and time that works best for you.",
+      "success": "Your appointment has been successfully confirmed! You will be redirected...",
+      "error": "An error occurred while booking. Please try again.",
+      "serviceInfo": {
+        "title": "Service Information",
+        "serviceName": "Service",
+        "price": "Price",
+        "duration": "Duration",
+        "minutes": "minutes",
+        "provider": "Provider",
+        "description": "Description"
+      },
+      "form": {
+        "date": "Preferred Date",
+        "time": "Preferred Time",
+        "notes": "Additional Notes",
+        "notesPlaceholder": "Additional information, special requests...",
+        "noSlotsAvailable": "No time slots available for this date",
+        "cancel": "Cancel",
+        "confirm": "Confirm Booking",
+        "submitting": "Booking in progress..."
+      }
+    },
+    "appointments": {
+      "title": "My Appointments",
+      "subtitle": "View and manage your upcoming appointments.",
+      "error": "Error loading appointments.",
+      "status": {
+        "confirmed": "Confirmed",
+        "pending": "Pending",
+        "cancelled": "Cancelled"
+      },
+      "actions": {
+        "modify": "Modify",
+        "cancel": "Cancel"
+      },
+      "noAppointments": {
+        "title": "No appointments",
+        "subtitle": "You don't have any scheduled appointments yet.",
+        "bookNow": "Book now"
       }
     }
   }

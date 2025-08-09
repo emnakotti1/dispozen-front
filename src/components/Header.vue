@@ -23,13 +23,26 @@
         </button>
       </div>
       <div class="hidden lg:flex lg:gap-x-12">
-        <a
-          v-for="item in navigation"
-          :key="item.name"
-          :href="item.href"
-          class="text-sm font-semibold text-gray-900"
-          >{{ item.name }}</a
-        >
+        <template v-if="isAuthenticated">
+          <RouterLink
+            v-for="item in authenticatedNavigation"
+            :key="item.name"
+            :to="item.to"
+            class="text-sm font-semibold text-gray-900 hover:text-gray-600"
+          >
+            {{ item.name }}
+          </RouterLink>
+        </template>
+        <template v-else>
+          <a
+            v-for="item in navigation"
+            :key="item.name"
+            :href="item.href"
+            class="text-sm font-semibold text-gray-900"
+          >
+            {{ item.name }}
+          </a>
+        </template>
       </div>
       <div
         class="hidden lg:flex lg:flex-1 lg:justify-end lg:items-center lg:gap-4"
@@ -81,14 +94,27 @@
         </div>
         <div class="mt-6">
           <div class="space-y-2">
-            <a
-              v-for="item in navigation"
-              :key="item.name"
-              :href="item.href"
-              class="block rounded-lg px-3 py-2 text-base font-semibold text-gray-900 hover:bg-gray-50"
-            >
-              {{ item.name }}
-            </a>
+            <template v-if="isAuthenticated">
+              <RouterLink
+                v-for="item in authenticatedNavigation"
+                :key="item.name"
+                :to="item.to"
+                class="block rounded-lg px-3 py-2 text-base font-semibold text-gray-900 hover:bg-gray-50"
+                @click="mobileMenuOpen = false"
+              >
+                {{ item.name }}
+              </RouterLink>
+            </template>
+            <template v-else>
+              <a
+                v-for="item in navigation"
+                :key="item.name"
+                :href="item.href"
+                class="block rounded-lg px-3 py-2 text-base font-semibold text-gray-900 hover:bg-gray-50"
+              >
+                {{ item.name }}
+              </a>
+            </template>
           </div>
           <!-- Menu mobile authentification -->
           <div class="mt-6 pt-6 border-t border-gray-200">
@@ -137,6 +163,11 @@ const navigation = computed(() => [
   { name: t('message.navigation.calendar'), href: '#' },
   { name: t('message.navigation.services'), href: '#' },
   { name: t('message.navigation.contact'), href: '#' },
+])
+
+const authenticatedNavigation = computed(() => [
+  { name: t('navigation.providers'), to: '/providers' },
+  { name: t('navigation.appointments'), to: '/appointments' },
 ])
 
 // Fonction de déconnexion

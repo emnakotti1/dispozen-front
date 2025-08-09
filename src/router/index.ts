@@ -3,6 +3,8 @@ import Login from '../pages/login.vue'
 import Register from '../pages/registration.vue'
 import ProvidersList from '../pages/ProvidersList.vue'
 import ProviderServices from '../pages/ProviderServices.vue'
+import BookingPage from '../pages/BookingPage.vue'
+import AppointmentsList from '../pages/AppointmentsList.vue'
 import TestAuth from '../pages/TestAuth.vue'
 import { authGuard, guestGuard } from './guards'
 
@@ -25,6 +27,16 @@ const routes = [
   {
     path: '/providers/:id/services',
     component: ProviderServices,
+    beforeEnter: authGuard, // Protéger cette route
+  },
+  {
+    path: '/booking/:providerId/:serviceId',
+    component: BookingPage,
+    beforeEnter: authGuard, // Protéger cette route
+  },
+  {
+    path: '/appointments',
+    component: AppointmentsList,
     beforeEnter: authGuard, // Protéger cette route
   },
   {

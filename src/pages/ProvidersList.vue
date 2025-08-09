@@ -103,12 +103,14 @@ function getImageUrl(imagePath: string) {
 
           <!-- Contact Icons -->
           <div class="flex items-center gap-4 text-gray-600">
-            <div class="flex items-center gap-1" v-if="provider.phoneNumber">
-              <PhoneIcon class="h-5 w-5 text-gray-600 flex-shrink-0" />
-            </div>
-            <div class="flex items-center gap-1" v-if="provider.email">
-              <EnvelopeIcon class="h-5 w-5 text-gray-600 flex-shrink-0" />
-            </div>
+            <a
+              v-if="provider.phoneNumber"
+              :href="`tel:${provider.phoneNumber}`"
+              class="flex items-center gap-1 hover:text-indigo-600 transition-colors cursor-pointer"
+            >
+              <span class="text-sm">{{ provider.phoneNumber }}</span>
+              <PhoneIcon class="h-5 w-5 flex-shrink-0" />
+            </a>
           </div>
         </div>
       </div>

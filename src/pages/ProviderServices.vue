@@ -73,12 +73,15 @@
                 {{ service.price }} {{ service.currency }}
               </td>
               <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-600">
-                <button
-                  type="button"
-                  class="rounded bg-indigo-600 text-white px-3 py-1 text-sm font-semibold shadow hover:bg-indigo-700"
+                <router-link
+                  :to="{
+                    path: `/booking/${providerId}/${service.id}`,
+                    query: { providerName: 'Provider Name' },
+                  }"
+                  class="rounded bg-indigo-600 text-white px-3 py-1 text-sm font-semibold shadow hover:bg-indigo-700 transition-colors"
                 >
                   {{ t('button.book') }}
-                </button>
+                </router-link>
               </td>
             </tr>
             <tr v-if="services?.length === 0">
@@ -97,6 +100,7 @@
 import { useRoute } from 'vue-router'
 import { useProviderServicesQuery } from '../hooksQuerie/useProviderServicesQuery'
 import { useI18n } from 'vue-i18n'
+import arriere from '../assets/333.jpg'
 
 const route = useRoute()
 const providerId = route.params.id as string
