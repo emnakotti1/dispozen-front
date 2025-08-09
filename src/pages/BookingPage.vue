@@ -127,24 +127,81 @@
           >
             {{ t('booking.form.time') }} *
           </label>
-          <div class="grid grid-cols-4 gap-2">
+
+          <!-- Indicateur de chargement des créneaux -->
+          <div
+            v-if="isLoadingUnavailabilities && bookingForm.date"
+            class="flex items-center justify-center py-4"
+          >
+            <svg
+              class="animate-spin h-5 w-5 text-indigo-600 mr-2"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+            <span class="text-sm text-gray-600"
+              >Vérification des disponibilités...</span
+            >
+          </div>
+
+          <!-- Grille des créneaux -->
+          <div v-else class="grid grid-cols-4 gap-2">
             <button
-              v-for="slot in availableTimeSlots"
+              v-for="slot in allTimeSlots"
               :key="slot"
               type="button"
-              @click="selectTimeSlot(slot)"
+              :disabled="isSlotUnavailable(slot)"
+              @click="!isSlotUnavailable(slot) && selectTimeSlot(slot)"
               :class="[
                 'px-3 py-2 text-sm font-medium rounded-md border transition-colors',
-                bookingForm.startTime === slot
-                  ? 'bg-indigo-600 text-white border-indigo-600'
-                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50',
+                isSlotUnavailable(slot)
+                  ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed opacity-50'
+                  : bookingForm.startTime === slot
+                    ? 'bg-indigo-600 text-white border-indigo-600'
+                    : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 cursor-pointer',
               ]"
+              :title="isSlotUnavailable(slot) ? 'Créneau indisponible' : ''"
             >
               {{ slot }}
             </button>
           </div>
+
+          <!-- Légende -->
+          <div v-if="bookingForm.date && allTimeSlots.length > 0" class="mt-3 flex items-center space-x-4 text-xs text-gray-600">
+            <div class="flex items-center">
+              <div class="w-3 h-3 bg-white border border-gray-300 rounded mr-1"></div>
+              <span>Disponible</span>
+            </div>
+            <div class="flex items-center">
+              <div class="w-3 h-3 bg-indigo-600 rounded mr-1"></div>
+              <span>Sélectionné</span>
+            </div>
+            <div class="flex items-center">
+              <div class="w-3 h-3 bg-gray-100 border border-gray-200 rounded mr-1 opacity-50"></div>
+              <span>Indisponible</span>
+            </div>
+          </div>
+
           <p
-            v-if="availableTimeSlots.length === 0 && bookingForm.date"
+            v-if="
+              !isLoadingUnavailabilities &&
+              availableTimeSlots.length === 0 &&
+              bookingForm.date
+            "
             class="mt-2 text-sm text-gray-500"
           >
             {{ t('booking.form.noSlotsAvailable') }}
@@ -216,11 +273,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useProviderServicesQuery } from '../hooksQuerie/useProviderServicesQuery'
 import { useCreateAppointment } from '../hooksQuerie/appointments'
+import { useProviderUnavailabilities } from '../hooksQuerie/calendar'
 import arriere from '../assets/333.jpg'
 
 const route = useRoute()
@@ -236,11 +294,6 @@ const { services } = useProviderServicesQuery(providerId)
 const { createAppointment, resetErrors, isLoading, isError, isSuccess, error } =
   useCreateAppointment()
 
-// Service sélectionné
-const selectedService = computed(() => {
-  return services.value?.find(service => service.id === serviceId)
-})
-
 // Formulaire de réservation
 const bookingForm = ref({
   date: '',
@@ -248,27 +301,59 @@ const bookingForm = ref({
   notes: '',
 })
 
+// Service sélectionné
+const selectedService = computed(() => {
+  return services.value?.find(service => service.id === serviceId)
+})
+
+// Hook pour les indisponibilités - ne se déclenche que si une date est sélectionnée
+const { data: unavailabilities, isLoading: isLoadingUnavailabilities } =
+  useProviderUnavailabilities(
+    providerId,
+    computed(() => bookingForm.value.date),
+  )
+
 // Date minimum (aujourd'hui)
 const minDate = computed(() => {
   const today = new Date()
   return today.toISOString().split('T')[0]
 })
 
-// Créneaux horaires disponibles (de 8h à 18h par exemple)
-const availableTimeSlots = computed(() => {
+// Tous les créneaux horaires possibles (de 8h à 18h par exemple)
+const allTimeSlots = computed(() => {
   if (!bookingForm.value.date) return []
 
-  // Pour simplifier, nous générons des créneaux de 30 minutes entre 8h et 18h
+  // Générer tous les créneaux possibles de 30 minutes entre 8h et 18h
   const slots = []
   for (let hour = 8; hour < 18; hour++) {
     slots.push(`${hour.toString().padStart(2, '0')}:00`)
     slots.push(`${hour.toString().padStart(2, '0')}:30`)
   }
-
-  // Note: Cette logique sera étendue pour filtrer les créneaux déjà pris
-  // en appelant une API qui retourne les créneaux disponibles pour une date donnée
-
   return slots
+})
+
+// Fonction pour vérifier si un créneau est indisponible
+const isSlotUnavailable = (slot: string) => {
+  if (!unavailabilities.value || !bookingForm.value.date) return false
+
+  const selectedDate = bookingForm.value.date
+  const unavailabilitiesForDate = unavailabilities.value.filter(
+    unavailability => unavailability.date === selectedDate,
+  )
+
+  return unavailabilitiesForDate.some(unavailability => {
+    const slotTime = slot
+    const startTime = unavailability.startTime.substring(0, 5) // Format HH:MM
+    const endTime = unavailability.endTime.substring(0, 5) // Format HH:MM
+
+    // Vérifier si le créneau est dans la plage d'indisponibilité
+    return slotTime >= startTime && slotTime < endTime
+  })
+}
+
+// Créneaux horaires disponibles (pour la validation)
+const availableTimeSlots = computed(() => {
+  return allTimeSlots.value.filter(slot => !isSlotUnavailable(slot))
 })
 
 // Validation du formulaire
@@ -276,12 +361,18 @@ const isFormValid = computed(() => {
   return (
     bookingForm.value.date &&
     bookingForm.value.startTime &&
-    selectedService.value
+    selectedService.value &&
+    !isSlotUnavailable(bookingForm.value.startTime) // Vérifier que le créneau sélectionné est disponible
   )
 })
 
 // Fonctions
 const selectTimeSlot = (slot: string) => {
+  // Vérifier que le créneau n'est pas indisponible avant de le sélectionner
+  if (isSlotUnavailable(slot)) {
+    console.warn('Tentative de sélection d\'un créneau indisponible:', slot)
+    return
+  }
   bookingForm.value.startTime = slot
 }
 
@@ -323,4 +414,16 @@ onMounted(() => {
     // Rediriger vers la liste des providers
   }
 })
+
+// Watcher pour déselectionner un créneau qui devient indisponible
+watch(
+  () => bookingForm.value.date,
+  () => {
+    // Si un créneau est sélectionné et qu'il devient indisponible, le déselectionner
+    if (bookingForm.value.startTime && isSlotUnavailable(bookingForm.value.startTime)) {
+      console.log('Créneau sélectionné devenu indisponible, désélection automatique')
+      bookingForm.value.startTime = ''
+    }
+  },
+)
 </script>
