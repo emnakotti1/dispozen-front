@@ -25,6 +25,7 @@ const hideLayout = computed(() => noLayoutRoutes.includes(route.path))
 
     <!-- Footer uniquement si on ne cache pas le layout -->
     <Footer v-if="!hideLayout" />
+
   </div>
 </template>
 

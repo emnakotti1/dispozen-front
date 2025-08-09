@@ -31,10 +31,27 @@
           >{{ item.name }}</a
         >
       </div>
-      <div class="hidden lg:flex lg:flex-1 lg:justify-end">
-        <a href="#" class="text-sm font-semibold text-gray-900">
-          {{ t("message.navigation.login") }} &rarr;
-        </a>
+      <div
+        class="hidden lg:flex lg:flex-1 lg:justify-end lg:items-center lg:gap-4"
+      >
+        <div v-if="isAuthenticated" class="flex items-center gap-4">
+          <span class="text-sm text-gray-700">
+            Bonjour, {{ currentUser?.firstname }}
+          </span>
+          <button
+            @click="handleLogout"
+            class="text-sm font-semibold text-red-600 hover:text-red-500"
+          >
+            Déconnexion
+          </button>
+        </div>
+        <RouterLink
+          v-else
+          to="/login"
+          class="text-sm font-semibold text-gray-900"
+        >
+          {{ t('message.navigation.login') }} &rarr;
+        </RouterLink>
       </div>
     </nav>
 
@@ -73,6 +90,27 @@
               {{ item.name }}
             </a>
           </div>
+          <!-- Menu mobile authentification -->
+          <div class="mt-6 pt-6 border-t border-gray-200">
+            <div v-if="isAuthenticated" class="space-y-2">
+              <div class="text-base font-semibold text-gray-900">
+                Bonjour, {{ currentUser?.firstname }}
+              </div>
+              <button
+                @click="handleLogout"
+                class="block w-full text-left rounded-lg px-3 py-2 text-base font-semibold text-red-600 hover:bg-red-50"
+              >
+                Déconnexion
+              </button>
+            </div>
+            <RouterLink
+              v-else
+              to="/login"
+              class="block rounded-lg px-3 py-2 text-base font-semibold text-gray-900 hover:bg-gray-50"
+            >
+              {{ t('message.navigation.login') }}
+            </RouterLink>
+          </div>
         </div>
       </DialogPanel>
     </Dialog>
@@ -80,19 +118,31 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
-import { Dialog, DialogPanel } from "@headlessui/vue";
-import { Bars3Icon, XMarkIcon } from "@heroicons/vue/24/outline";
-import { useI18n } from "vue-i18n";
-import logo from "../assets/logo.png";
+import { ref, computed } from 'vue'
+import { Dialog, DialogPanel } from '@headlessui/vue'
+import { Bars3Icon, XMarkIcon } from '@heroicons/vue/24/outline'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
+import { useAuth } from '../composables/useAuth'
+import logo from '../assets/logo.png'
 
-const { t } = useI18n();
-const mobileMenuOpen = ref(false);
+const { t } = useI18n()
+const router = useRouter()
+const mobileMenuOpen = ref(false)
+
+// Utilisation du composable d'authentification
+const { isAuthenticated, currentUser, logout } = useAuth()
 
 const navigation = computed(() => [
- 
-  { name: t("message.navigation.calendar"), href: "#" },
-  { name: t("message.navigation.services"), href: "#" },
-  { name: t("message.navigation.contact"), href: "#" },
-]);
+  { name: t('message.navigation.calendar'), href: '#' },
+  { name: t('message.navigation.services'), href: '#' },
+  { name: t('message.navigation.contact'), href: '#' },
+])
+
+// Fonction de déconnexion
+const handleLogout = () => {
+  logout()
+  mobileMenuOpen.value = false
+  router.push('/login')
+}
 </script>

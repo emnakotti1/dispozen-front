@@ -44,11 +44,30 @@
       "linkedin": "LinkedIn"
     },
     "common": {
+      "loading": "Loading...",
       "navigation": {
         "services": "Our Services"
       },
       "button": {
         "book": "Book"
+      },
+      "error": {
+        "loadingServices": "Error loading services."
+      },
+      "noData": {
+        "services": "No services found."
+      }
+    },
+    "providerServices": {
+      "title": "Provider Services",
+      "subtitle": "List of services offered by this provider.",
+      "table": {
+        "headers": {
+          "name": "Name",
+          "description": "Description",
+          "price": "Price",
+          "action": "Action"
+        }
       }
     }
   }

@@ -1,7 +1,44 @@
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { ArrowLongLeftIcon, ArrowLongRightIcon } from '@heroicons/vue/20/solid'
+import { PhoneIcon, EnvelopeIcon } from '@heroicons/vue/24/solid'
+import { useProvidersQuery } from '../hooksQuerie/useProvidersQuery'
+import arriere from '../assets/444.jpg'
+
+const { t } = useI18n()
+const searchQuery = ref('')
+const limit = 6
+
+const {
+  data,
+  isLoading,
+  isError,
+  currentPage,
+  nextPage,
+  prevPage,
+  isFetching,
+} = useProvidersQuery(limit)
+
+const filteredProviders = computed(() => {
+  const query = searchQuery.value.toLowerCase()
+  return (data.value || []).filter(
+    provider =>
+      `${provider.firstName} ${provider.lastName}`
+        .toLowerCase()
+        .includes(query) || provider.city.toLowerCase().includes(query),
+  )
+})
+
+function getImageUrl(imagePath: string) {
+  return imagePath ? `http://localhost:3000/${imagePath}` : ''
+}
+</script>
+
 <template>
   <div class="relative min-h-screen py-10 px-6 max-w-7xl mx-auto">
     <!-- Image d'arrière-plan fixe -->
-   <div
+    <div
       class="fixed inset-0 bg-cover bg-center -z-10"
       :style="{ backgroundImage: `url(${arriere})` }"
     ></div>
@@ -50,11 +87,11 @@
         <div class="mt-4 flex items-center justify-between">
           <!-- Button -->
           <RouterLink
-  :to="`/providers/${provider.id}/services`"
-  class="rounded bg-indigo-50 px-3 py-1 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
->
-  {{ t("common.navigation.services") }}
-</RouterLink>
+            :to="`/providers/${provider.id}/services`"
+            class="rounded bg-indigo-50 px-3 py-1 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
+          >
+            {{ t('common.navigation.services') }}
+          </RouterLink>
 
           <!-- Contact Icons -->
           <div class="flex items-center gap-4 text-gray-600">
@@ -99,40 +136,3 @@
     </nav>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref, computed } from "vue";
-import { useI18n } from "vue-i18n";
-import { ArrowLongLeftIcon, ArrowLongRightIcon } from "@heroicons/vue/20/solid";
-import { PhoneIcon, EnvelopeIcon } from "@heroicons/vue/24/solid";
-import { useProvidersQuery } from "../hooksQuerie/useProvidersQuery";
-import arriere from '../assets/444.jpg'
-
-const { t } = useI18n();
-const searchQuery = ref("");
-const limit = 6;
-
-const {
-  data,
-  isLoading,
-  isError,
-  currentPage,
-  nextPage,
-  prevPage,
-  isFetching,
-} = useProvidersQuery(limit);
-
-const filteredProviders = computed(() => {
-  const query = searchQuery.value.toLowerCase();
-  return (data.value || []).filter(
-    (provider) =>
-      `${provider.firstName} ${provider.lastName}`
-        .toLowerCase()
-        .includes(query) || provider.city.toLowerCase().includes(query)
-  );
-});
-
-function getImageUrl(imagePath: string) {
-  return imagePath ? `http://localhost:3000/${imagePath}` : "";
-}
-</script>

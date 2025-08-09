@@ -1,31 +1,36 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { RouterLink, useRouter } from "vue-router";
-import logo from "../assets/logo.png";
-import { useI18n } from "vue-i18n";
-import LanguageSelector from "../components/LanguageSelector.vue";
-import { useLoginMutation } from "../hooksQuerie/auth";
+import { ref } from 'vue'
+import { RouterLink, useRouter } from 'vue-router'
+import logo from '../assets/logo.png'
+import { useI18n } from 'vue-i18n'
+import LanguageSelector from '../components/LanguageSelector.vue'
+import { useLoginMutation } from '../hooksQuerie/auth'
+import { useAuth } from '../composables/useAuth'
 
-const { t } = useI18n();
-const router = useRouter();
+const { t } = useI18n()
+const router = useRouter()
 
-const email = ref("");
-const password = ref("");
+const email = ref('')
+const password = ref('')
 
-const { mutate: login, isPending, isError, error } = useLoginMutation();
+const { mutate: loginMutation, isPending, isError, error } = useLoginMutation()
+const { login } = useAuth()
 
 function handleSubmit(e: Event) {
-  e.preventDefault();
-  login(
+  e.preventDefault()
+  loginMutation(
     { email: email.value, password: password.value },
     {
-      onSuccess: (data) => {
-         localStorage.setItem('accessToken', data.access_token)
+      onSuccess: data => {
 
-        router.push("/providers"); // Redirige vers la page d'accueil ou dashboard
+        login(data)
+        router.push('/providers')
       },
-    }
-  );
+      onError: error => {
+        console.error('Erreur de connexion:', error)
+      },
+    },
+  )
 }
 </script>
 
@@ -47,15 +52,15 @@ function handleSubmit(e: Event) {
             alt="Logo de l'entreprise"
           />
           <h2 class="mt-8 text-2xl font-bold tracking-tight text-gray-900">
-            {{ t("message.auth.login.title") }}
+            {{ t('message.auth.login.title') }}
           </h2>
           <p class="mt-2 text-sm text-gray-500">
-            {{ t("message.auth.login.subtitle") }}
+            {{ t('message.auth.login.subtitle') }}
             <RouterLink
               to="/register"
               class="font-semibold text-indigo-600 hover:text-indigo-500"
             >
-              {{ t("message.auth.login.createAccount") }}
+              {{ t('message.auth.login.createAccount') }}
             </RouterLink>
           </p>
         </div>
@@ -68,7 +73,7 @@ function handleSubmit(e: Event) {
                 for="email"
                 class="block text-sm font-medium text-gray-900"
               >
-                {{ t("message.auth.login.email") }}
+                {{ t('message.auth.login.email') }}
               </label>
               <input
                 v-model="email"
@@ -86,7 +91,7 @@ function handleSubmit(e: Event) {
                 for="password"
                 class="block text-sm font-medium text-gray-900"
               >
-                {{ t("message.auth.login.password") }}
+                {{ t('message.auth.login.password') }}
               </label>
               <input
                 v-model="password"
@@ -108,7 +113,7 @@ function handleSubmit(e: Event) {
                   class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
                 />
                 <label for="remember-me" class="text-sm text-gray-900">
-                  {{ t("message.auth.login.rememberMe") }}
+                  {{ t('message.auth.login.rememberMe') }}
                 </label>
               </div>
 
@@ -117,7 +122,7 @@ function handleSubmit(e: Event) {
                   href="#"
                   class="font-semibold text-indigo-600 hover:text-indigo-500"
                 >
-                  {{ t("message.auth.login.forgotPassword") }}
+                  {{ t('message.auth.login.forgotPassword') }}
                 </a>
               </div>
             </div>
@@ -130,12 +135,12 @@ function handleSubmit(e: Event) {
               >
                 {{
                   isPending
-                    ? t("common.loading")
-                    : t("message.auth.login.signIn")
+                    ? t('common.loading')
+                    : t('message.auth.login.signIn')
                 }}
               </button>
               <p v-if="isError" class="mt-2 text-sm text-red-600">
-                {{ error?.message || "Erreur de connexion" }}
+                {{ error?.message || 'Erreur de connexion' }}
               </p>
             </div>
           </form>
@@ -149,7 +154,7 @@ function handleSubmit(e: Event) {
             </div>
             <div class="relative flex justify-center text-sm">
               <span class="bg-white px-4 text-gray-500">{{
-                t("message.auth.login.orContinueWith")
+                t('message.auth.login.orContinueWith')
               }}</span>
             </div>
           </div>
@@ -165,7 +170,7 @@ function handleSubmit(e: Event) {
                   d="M21.35 11.1h-9.17v2.92h5.35c-.23 1.28-1.44 3.76-5.35 3.76-3.23 0-5.87-2.69-5.87-6s2.64-6 5.87-6c1.84 0 3.07.79 3.78 1.48l2.59-2.5C17.1 2.9 14.9 2 12 2 6.48 2 2 6.48 2 12s4.48 10 10 10c5.71 0 9.46-4.04 9.46-9.7 0-.66-.11-1.2-.23-1.7z"
                 />
               </svg>
-              <span>{{ t("message.auth.login.continueWithGoogle") }}</span>
+              <span>{{ t('message.auth.login.continueWithGoogle') }}</span>
             </a>
           </div>
         </div>

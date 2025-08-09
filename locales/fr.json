@@ -3,6 +3,12 @@
     "loading": "Chargement...",
     "navigation": {
       "services": "Nos Services"
+    },
+    "error": {
+      "loadingServices": "Erreur lors du chargement des services."
+    },
+    "noData": {
+      "services": "Aucun service trouvé."
     }
   },
   "message": {
@@ -52,5 +58,17 @@
   },
   "button": {
     "book": "Réserver"
+  },
+  "providerServices": {
+    "title": "Nos préstations",
+    "subtitle": "Liste des services proposés par ce provider.",
+    "table": {
+      "headers": {
+        "name": "Nom",
+        "description": "Description",
+        "price": "Prix",
+        "action": "Action"
+      }
+    }
   }
 }

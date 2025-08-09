@@ -1,24 +1,27 @@
+import { useAuth } from '../composables/useAuth'
 
-const API_BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = 'http://localhost:3000'
 
 export async function apiFetch<T>(
   endpoint: string,
   options?: RequestInit,
 ): Promise<T> {
-  const token = localStorage.getItem('token');  // récupère le token stocké
+  // Utiliser le composable d'authentification pour obtenir le token
+  const { getAccessToken } = useAuth()
+  const token = getAccessToken()
 
   const res = await fetch(`${API_BASE_URL}${endpoint}`, {
     headers: {
       'Content-Type': 'application/json',
-      ...(token && { 'Authorization': `Bearer ${token}` }),  // ajoute Authorization si token existe
+      ...(token && { Authorization: `Bearer ${token}` }),
     },
     ...options,
-  });
+  })
 
   if (!res.ok) {
-    const error = await res.text();
-    throw new Error(error || 'Erreur API');
+    const error = await res.text()
+    throw new Error(error || 'Erreur API')
   }
 
-  return res.json();
+  return res.json()
 }

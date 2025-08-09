@@ -6,9 +6,9 @@ export type Service = {
   description: string
   price: number
   providerId: string
-  // ajoute d'autres champs si besoin
+  currency: string
 }
 
 export function getServicesByProvider(providerId: string) {
-  return apiFetch<Service[]>(`/services/provider/${providerId}`);
+  return apiFetch<Service[]>(`/services/provider/${providerId}`)
 }
