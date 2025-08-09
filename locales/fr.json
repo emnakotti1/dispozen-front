@@ -59,6 +59,19 @@
   "button": {
     "book": "Réserver"
   },
+  "providers": {
+    "search": {
+      "placeholder": "Rechercher un provider..."
+    },
+    "status": {
+      "loading": "Chargement...",
+      "error": "Erreur lors du chargement."
+    },
+    "pagination": {
+      "previous": "Précédent",
+      "next": "Suivant"
+    }
+  },
   "providerServices": {
     "title": "Nos préstations",
     "subtitle": "Liste des services proposés par ce provider.",

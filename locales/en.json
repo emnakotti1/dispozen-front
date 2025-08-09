@@ -58,6 +58,19 @@
         "services": "No services found."
       }
     },
+    "providers": {
+      "search": {
+        "placeholder": "Search for a provider..."
+      },
+      "status": {
+        "loading": "Loading...",
+        "error": "Error loading data."
+      },
+      "pagination": {
+        "previous": "Previous",
+        "next": "Next"
+      }
+    },
     "providerServices": {
       "title": "Provider Services",
       "subtitle": "List of services offered by this provider.",
