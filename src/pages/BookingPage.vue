@@ -300,6 +300,7 @@ const submitBooking = () => {
     serviceId,
     date: bookingForm.value.date,
     startTime: bookingForm.value.startTime,
+    notes: bookingForm.value.notes,
   })
 
   createAppointment({
@@ -307,6 +308,7 @@ const submitBooking = () => {
     serviceId,
     date: bookingForm.value.date,
     startTime: bookingForm.value.startTime,
+    notes: bookingForm.value.notes || undefined, // Envoyer undefined si vide
   })
 }
 

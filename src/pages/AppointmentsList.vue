@@ -46,9 +46,16 @@
                   {{ appointment.service.name }}
                 </h3>
                 <span
-                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
+                  :class="[
+                    'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
+                    appointment.status === 'confirmed' 
+                      ? 'bg-green-100 text-green-800'
+                      : appointment.status === 'pending'
+                      ? 'bg-yellow-100 text-yellow-800'
+                      : 'bg-red-100 text-red-800'
+                  ]"
                 >
-                  {{ t('appointments.status.confirmed') }}
+                  {{ getStatusText(appointment.status) }}
                 </span>
               </div>
 
@@ -69,7 +76,7 @@
                       d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                     ></path>
                   </svg>
-                  {{ formatDate(appointment.calendar.date) }}
+                  {{ appointment.calendar ? formatDate(appointment.calendar.date) : 'Date non définie' }}
                 </div>
 
                 <div class="flex items-center">
@@ -86,8 +93,11 @@
                       d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                     ></path>
                   </svg>
-                  {{ appointment.calendar.startTime }} -
-                  {{ appointment.calendar.endTime }}
+                  <span v-if="appointment.calendar">
+                    {{ appointment.calendar.startTime }} -
+                    {{ appointment.calendar.endTime }}
+                  </span>
+                  <span v-else>Heure non définie</span>
                 </div>
 
                 <div class="flex items-center">
@@ -132,6 +142,13 @@
                 class="mt-3 text-sm text-gray-600"
               >
                 {{ appointment.service.description }}
+              </p>
+              
+              <p
+                v-if="appointment.notes"
+                class="mt-2 text-sm text-gray-600 italic"
+              >
+                <strong>Notes:</strong> {{ appointment.notes }}
               </p>
             </div>
 
@@ -206,5 +223,19 @@ const formatDate = (dateString: string) => {
     month: 'long',
     day: 'numeric',
   })
+}
+
+// Fonction pour obtenir le texte du statut
+const getStatusText = (status: string) => {
+  switch (status) {
+    case 'confirmed':
+      return t('appointments.status.confirmed')
+    case 'pending':
+      return t('appointments.status.pending')
+    case 'cancelled':
+      return t('appointments.status.cancelled')
+    default:
+      return status
+  }
 }
 </script>

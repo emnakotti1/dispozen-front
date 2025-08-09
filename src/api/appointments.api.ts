@@ -5,7 +5,16 @@ export interface CreateAppointmentDto {
   serviceId: string
   date: string // Format: YYYY-MM-DD
   startTime: string // Format: HH:MM
+  notes?: string // Notes additionnelles (optionnel)
 }
+
+export const AppointmentStatus = {
+  PENDING: 'pending',
+  CONFIRMED: 'confirmed',
+  CANCELLED: 'cancelled',
+} as const
+
+export type AppointmentStatus = typeof AppointmentStatus[keyof typeof AppointmentStatus]
 
 export interface Appointment {
   id: string
@@ -34,9 +43,12 @@ export interface Appointment {
     date: string
     startTime: string
     endTime: string
-  }
+  } | null
+  status: AppointmentStatus
+  isValidated: boolean
+  isCancelled: boolean
+  notes?: string
   createdAt: string
-  updatedAt: string
 }
 
 export async function createAppointment(
