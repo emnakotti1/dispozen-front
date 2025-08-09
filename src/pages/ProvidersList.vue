@@ -1,14 +1,27 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ArrowLongLeftIcon, ArrowLongRightIcon } from '@heroicons/vue/20/solid'
 import { PhoneIcon, EnvelopeIcon } from '@heroicons/vue/24/solid'
 import { useProvidersQuery } from '../hooksQuerie/useProvidersQuery'
-import arriere from '../assets/444.jpg'
 
 const { t } = useI18n()
 const searchQuery = ref('')
+const debouncedSearchQuery = ref('')
 const limit = 6
+
+// Debounce search to avoid too many API calls
+let debounceTimeout: ReturnType<typeof setTimeout>
+watch(
+  searchQuery,
+  newValue => {
+    clearTimeout(debounceTimeout)
+    debounceTimeout = setTimeout(() => {
+      debouncedSearchQuery.value = newValue
+    }, 300) // 300ms debounce
+  },
+  { immediate: true },
+)
 
 const {
   data,
@@ -18,16 +31,12 @@ const {
   nextPage,
   prevPage,
   isFetching,
-} = useProvidersQuery(limit)
+  resetPage,
+} = useProvidersQuery(limit, debouncedSearchQuery)
 
-const filteredProviders = computed(() => {
-  const query = searchQuery.value.toLowerCase()
-  return (data.value || []).filter(
-    provider =>
-      `${provider.firstName} ${provider.lastName}`
-        .toLowerCase()
-        .includes(query) || provider.city.toLowerCase().includes(query),
-  )
+// Reset to page 1 when search changes
+watch(debouncedSearchQuery, () => {
+  resetPage()
 })
 
 function getImageUrl(imagePath: string) {
@@ -38,10 +47,7 @@ function getImageUrl(imagePath: string) {
 <template>
   <div class="relative min-h-screen py-10 px-6 max-w-7xl mx-auto">
     <!-- Image d'arrière-plan fixe -->
-    <div
-      class="fixed inset-0 bg-cover bg-center -z-10"
-      :style="{ backgroundImage: `url(${arriere})` }"
-    ></div>
+    <div class="fixed inset-0 bg-cover bg-center -z-10"></div>
 
     <!-- Search Bar -->
     <div class="max-w-4xl mx-auto mb-8 relative z-10">
@@ -67,7 +73,7 @@ function getImageUrl(imagePath: string) {
       class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 relative z-10"
     >
       <div
-        v-for="(provider, index) in filteredProviders"
+        v-for="(provider, index) in data"
         :key="provider.id ?? index"
         class="rounded-2xl shadow hover:shadow-lg transition p-4 border border-gray-200 bg-white"
       >
