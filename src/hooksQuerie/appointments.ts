@@ -13,12 +13,16 @@ export function useCreateAppointment() {
   const router = useRouter()
   const isSuccess = ref(false)
   const isSubmitting = ref(false)
+  const hasError = ref(false)
+  const errorMessage = ref<Error | null>(null)
   const { currentUser } = useAuth()
 
   const mutation = useMutation({
     mutationFn: createAppointment,
     onMutate: () => {
       isSubmitting.value = true
+      hasError.value = false
+      errorMessage.value = null
     },
     onSuccess: () => {
       // Invalider les requêtes liées aux rendez-vous pour le client connecté
@@ -27,6 +31,7 @@ export function useCreateAppointment() {
       })
       isSuccess.value = true
       isSubmitting.value = false
+      hasError.value = false
 
       // Rediriger vers la liste des rendez-vous après 2 secondes
       setTimeout(() => {
@@ -35,8 +40,10 @@ export function useCreateAppointment() {
     },
     onError: error => {
       console.error('Error creating appointment:', error)
-      isSuccess.value = false // Réinitialiser le succès en cas d'erreur
+      isSuccess.value = false
       isSubmitting.value = false
+      hasError.value = true
+      errorMessage.value = error
     },
   })
 
@@ -45,12 +52,19 @@ export function useCreateAppointment() {
     mutation.mutate(dto)
   }
 
+  const resetErrors = () => {
+    hasError.value = false
+    errorMessage.value = null
+    isSuccess.value = false
+  }
+
   return {
     createAppointment: createAppointmentMutation,
+    resetErrors,
     isLoading: computed(() => isSubmitting.value),
-    isError: computed(() => mutation.isError),
+    isError: computed(() => hasError.value),
     isSuccess: computed(() => isSuccess.value),
-    error: computed(() => mutation.error),
+    error: computed(() => errorMessage.value),
     data: computed(() => mutation.data),
   }
 }

@@ -233,7 +233,7 @@ const providerName = route.query.providerName as string
 
 // Hooks pour les données
 const { services } = useProviderServicesQuery(providerId)
-const { createAppointment, isLoading, isError, isSuccess, error } =
+const { createAppointment, resetErrors, isLoading, isError, isSuccess, error } =
   useCreateAppointment()
 
 // Service sélectionné
@@ -312,6 +312,9 @@ const submitBooking = () => {
 
 // Initialisation
 onMounted(() => {
+  // Réinitialiser les erreurs au montage du composant
+  resetErrors()
+  
   // Vérifier si les paramètres requis sont présents
   if (!providerId || !serviceId) {
     console.error('Provider ID and Service ID are required')
