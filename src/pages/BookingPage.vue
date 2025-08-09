@@ -179,7 +179,7 @@
           </button>
           <button
             type="submit"
-            :disabled="!isFormValid || isLoading.value"
+            :disabled="!isFormValid || isLoading"
             class="flex-1 px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span v-if="isLoading" class="flex items-center justify-center">

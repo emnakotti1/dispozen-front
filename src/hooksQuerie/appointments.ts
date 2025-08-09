@@ -12,16 +12,21 @@ export function useCreateAppointment() {
   const queryClient = useQueryClient()
   const router = useRouter()
   const isSuccess = ref(false)
+  const isSubmitting = ref(false)
   const { currentUser } = useAuth()
 
   const mutation = useMutation({
     mutationFn: createAppointment,
+    onMutate: () => {
+      isSubmitting.value = true
+    },
     onSuccess: () => {
       // Invalider les requêtes liées aux rendez-vous pour le client connecté
       queryClient.invalidateQueries({
         queryKey: ['appointments', currentUser.value?.id],
       })
       isSuccess.value = true
+      isSubmitting.value = false
 
       // Rediriger vers la liste des rendez-vous après 2 secondes
       setTimeout(() => {
@@ -31,6 +36,7 @@ export function useCreateAppointment() {
     onError: error => {
       console.error('Error creating appointment:', error)
       isSuccess.value = false // Réinitialiser le succès en cas d'erreur
+      isSubmitting.value = false
     },
   })
 
@@ -41,7 +47,7 @@ export function useCreateAppointment() {
 
   return {
     createAppointment: createAppointmentMutation,
-    isLoading: computed(() => mutation.isPending),
+    isLoading: computed(() => isSubmitting.value),
     isError: computed(() => mutation.isError),
     isSuccess: computed(() => isSuccess.value),
     error: computed(() => mutation.error),
