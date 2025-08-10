@@ -95,3 +95,23 @@ export async function cancelAppointment(id: string): Promise<string> {
     method: 'PATCH',
   })
 }
+
+export async function confirmAppointment(id: string): Promise<string> {
+  console.log('🔄 API: Confirmation rendez-vous ID:', id)
+  try {
+    const result = await apiFetch<string>(`/appointment/confirme/${id}`, {
+      method: 'PATCH',
+    })
+    console.log('✅ API: Réponse confirmation:', result)
+    return result
+  } catch (error) {
+    console.error('❌ API: Erreur confirmation:', error)
+    throw error
+  }
+}
+
+export async function getProviderAppointments(
+  providerId: string,
+): Promise<Appointment[]> {
+  return apiFetch<Appointment[]>(`/appointment/prestataire/${providerId}`)
+}

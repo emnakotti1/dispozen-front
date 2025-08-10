@@ -171,8 +171,8 @@
                 isSlotUnavailable(slot)
                   ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed opacity-50'
                   : bookingForm.startTime === slot
-                    ? 'bg-indigo-600 text-white border-indigo-600'
-                    : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 cursor-pointer',
+                  ? 'bg-indigo-600 text-white border-indigo-600'
+                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 cursor-pointer',
               ]"
               :title="isSlotUnavailable(slot) ? 'Créneau indisponible' : ''"
             >
@@ -181,9 +181,14 @@
           </div>
 
           <!-- Légende -->
-          <div v-if="bookingForm.date && allTimeSlots.length > 0" class="mt-3 flex items-center space-x-4 text-xs text-gray-600">
+          <div
+            v-if="bookingForm.date && allTimeSlots.length > 0"
+            class="mt-3 flex items-center space-x-4 text-xs text-gray-600"
+          >
             <div class="flex items-center">
-              <div class="w-3 h-3 bg-white border border-gray-300 rounded mr-1"></div>
+              <div
+                class="w-3 h-3 bg-white border border-gray-300 rounded mr-1"
+              ></div>
               <span>Disponible</span>
             </div>
             <div class="flex items-center">
@@ -191,7 +196,9 @@
               <span>Sélectionné</span>
             </div>
             <div class="flex items-center">
-              <div class="w-3 h-3 bg-gray-100 border border-gray-200 rounded mr-1 opacity-50"></div>
+              <div
+                class="w-3 h-3 bg-gray-100 border border-gray-200 rounded mr-1 opacity-50"
+              ></div>
               <span>Indisponible</span>
             </div>
           </div>
@@ -370,7 +377,7 @@ const isFormValid = computed(() => {
 const selectTimeSlot = (slot: string) => {
   // Vérifier que le créneau n'est pas indisponible avant de le sélectionner
   if (isSlotUnavailable(slot)) {
-    console.warn('Tentative de sélection d\'un créneau indisponible:', slot)
+    console.warn("Tentative de sélection d'un créneau indisponible:", slot)
     return
   }
   bookingForm.value.startTime = slot
@@ -420,8 +427,13 @@ watch(
   () => bookingForm.value.date,
   () => {
     // Si un créneau est sélectionné et qu'il devient indisponible, le déselectionner
-    if (bookingForm.value.startTime && isSlotUnavailable(bookingForm.value.startTime)) {
-      console.log('Créneau sélectionné devenu indisponible, désélection automatique')
+    if (
+      bookingForm.value.startTime &&
+      isSlotUnavailable(bookingForm.value.startTime)
+    ) {
+      console.log(
+        'Créneau sélectionné devenu indisponible, désélection automatique',
+      )
       bookingForm.value.startTime = ''
     }
   },

@@ -1,0 +1,95 @@
+<template>
+  <div class="min-h-screen bg-gray-50">
+    <!-- Sidebar Navigation -->
+    <div class="flex">
+      <div class="w-64 bg-white shadow-sm h-screen">
+        <nav class="mt-8 px-4" aria-label="Menu de navigation">
+          <div class="space-y-1">
+            <button
+              v-for="item in navigation"
+              :key="item.name"
+              @click="currentView = item.view"
+              :class="[
+                currentView === item.view
+                  ? 'bg-indigo-100 border-indigo-500 text-indigo-700'
+                  : 'border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+                'group flex items-center px-3 py-2 text-sm font-medium border-l-4 transition-colors w-full text-left',
+              ]"
+            >
+              <component :is="item.icon" class="mr-3 h-5 w-5" />
+              {{ item.name }}
+            </button>
+          </div>
+        </nav>
+      </div>
+
+      <!-- Main Content -->
+      <div class="flex-1 p-8">
+        <!-- Profile Management -->
+        <div v-if="currentView === 'profile'">
+          <ProviderProfile />
+        </div>
+
+        <!-- Appointments Management -->
+        <div v-else-if="currentView === 'appointments'">
+          <ProviderAppointments />
+        </div>
+
+        <!-- Today's Calendar -->
+        <div v-else-if="currentView === 'today'">
+          <TodayCalendar />
+        </div>
+
+        <!-- Full Calendar -->
+        <div v-else-if="currentView === 'calendar'">
+          <FullCalendar />
+        </div>
+
+        <!-- Default/Overview -->
+        <div v-else>
+          <DashboardOverview @change-view="currentView = $event" />
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuth } from '../../composables/useAuth'
+import {
+  UserIcon,
+  CalendarDaysIcon,
+  CalendarIcon,
+  ClockIcon,
+  ChartBarIcon,
+} from '@heroicons/vue/24/outline'
+import ProviderProfile from './ProviderProfile.vue'
+import ProviderAppointments from './ProviderAppointments.vue'
+import TodayCalendar from './TodayCalendar.vue'
+import FullCalendar from './FullCalendar.vue'
+import DashboardOverview from './DashboardOverview.vue'
+
+// Composables
+const router = useRouter()
+const { currentUser, logout } = useAuth()
+
+// State
+const currentView = ref('overview')
+
+// Navigation items
+const navigation = [
+  { name: "Vue d'ensemble", view: 'overview', icon: ChartBarIcon },
+  { name: 'Mon Profil', view: 'profile', icon: UserIcon },
+  { name: 'Réservations', view: 'appointments', icon: CalendarDaysIcon },
+  { name: 'Calendrier du jour', view: 'today', icon: ClockIcon },
+  { name: 'Calendrier général', view: 'calendar', icon: CalendarIcon },
+]
+
+// Methods
+const handleLogout = () => {
+  logout()
+  router.push('/login')
+}
+</script>

@@ -3,7 +3,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 import {
   createAppointment,
   cancelAppointment,
+  confirmAppointment,
   getAppointments,
+  getProviderAppointments,
   type CreateAppointmentDto,
 } from '../api/appointments.api'
 import { useRouter } from 'vue-router'
@@ -159,5 +161,91 @@ export function useCancelAppointment() {
     error: computed(() => mutation.error),
     successMessage: computed(() => successMessage.value),
     showSuccess: computed(() => showSuccess.value),
+  }
+}
+
+export function useProviderAppointments(providerId: string) {
+  const queryKey = computed(() => ['provider-appointments', providerId])
+
+  const {
+    data: appointments,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
+    queryKey,
+    queryFn: () => {
+      console.log('Fetching appointments for provider:', providerId)
+      return getProviderAppointments(providerId)
+    },
+    enabled: computed(() => !!providerId),
+    staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
+    refetchOnWindowFocus: true, // Refetch when window gains focus
+  })
+
+  return {
+    appointments,
+    isLoading,
+    isError,
+    refetch,
+  }
+}
+
+export function useConfirmAppointment() {
+  const queryClient = useQueryClient()
+  const isLoading = ref(false)
+  const isSuccess = ref(false)
+  const isError = ref(false)
+  const errorMessage = ref<string | null>(null)
+
+  const mutation = useMutation({
+    mutationFn: confirmAppointment,
+    onMutate: () => {
+      isLoading.value = true
+      isSuccess.value = false
+      isError.value = false
+      errorMessage.value = null
+    },
+    onSuccess: () => {
+      isLoading.value = false
+      isSuccess.value = true
+      isError.value = false
+
+      // Invalider les requêtes liées aux rendez-vous pour rafraîchir les données
+      queryClient.invalidateQueries({
+        queryKey: ['provider-appointments'],
+      })
+      queryClient.invalidateQueries({
+        queryKey: ['appointments'],
+      })
+    },
+    onError: (error: any) => {
+      console.error('Error confirming appointment:', error)
+      isLoading.value = false
+      isSuccess.value = false
+      isError.value = true
+      errorMessage.value =
+        error.message || 'Erreur lors de la confirmation du rendez-vous'
+    },
+  })
+
+  const confirmAppointmentFn = async (appointmentId: string) => {
+    console.log('🔄 Hook: Début confirmation appointment:', appointmentId)
+    try {
+      const result = await mutation.mutateAsync(appointmentId)
+      console.log('✅ Hook: Confirmation réussie:', result)
+      return result
+    } catch (error) {
+      console.error('❌ Hook: Erreur confirmation:', error)
+      throw error
+    }
+  }
+
+  return {
+    confirmAppointment: confirmAppointmentFn,
+    isLoading: computed(() => isLoading.value),
+    isSuccess: computed(() => isSuccess.value),
+    isError: computed(() => isError.value),
+    errorMessage: computed(() => errorMessage.value),
   }
 }

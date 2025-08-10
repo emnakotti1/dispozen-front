@@ -28,14 +28,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useAuth } from '../composables/useAuth'
 
 const { isAuthenticated, currentUser, logout } = useAuth()
 
 const tokenInStorage = ref(false)
 const userInStorage = ref(false)
-const tokenPayload = ref(null)
+const tokenPayload = ref<any>(null)
 
 const updateDebugInfo = () => {
   tokenInStorage.value = !!localStorage.getItem('accessToken')

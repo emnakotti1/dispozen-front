@@ -79,6 +79,7 @@ export function useAuth() {
     const userRole = loginResponse.role || (tokenPayload && tokenPayload.role)
     if (userRole) {
       localStorage.setItem('userRole', userRole)
+      console.log('🎭 Rôle utilisateur sauvegardé:', userRole)
     }
 
     console.log('💾 Données sauvegardées dans localStorage')
@@ -86,6 +87,9 @@ export function useAuth() {
       "✅ État d'authentification:",
       !!accessToken.value && !!user.value,
     )
+
+    // Retourner le rôle pour permettre une redirection immédiate
+    return userRole
   }
 
   // Fonction pour se déconnecter

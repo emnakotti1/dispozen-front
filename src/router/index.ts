@@ -6,7 +6,13 @@ import ProviderServices from '../pages/ProviderServices.vue'
 import BookingPage from '../pages/BookingPage.vue'
 import AppointmentsList from '../pages/AppointmentsList.vue'
 import TestAuth from '../pages/TestAuth.vue'
-import { authGuard, guestGuard } from './guards'
+import ProviderLayout from '../layouts/ProviderLayout.vue'
+import ProviderOverview from '../pages/provider/ProviderOverview.vue'
+import ProviderProfile from '../pages/provider/ProviderProfile.vue'
+import ProviderAppointments from '../pages/provider/ProviderAppointments.vue'
+import ProviderCalendarToday from '../pages/provider/ProviderCalendarToday.vue'
+import ProviderCalendar from '../pages/provider/ProviderCalendar.vue'
+import { authGuard, guestGuard, providerGuard } from './guards'
 
 const routes = [
   {
@@ -40,10 +46,56 @@ const routes = [
     beforeEnter: authGuard, // Protéger cette route
   },
   {
+    path: '/provider',
+    component: ProviderLayout,
+    beforeEnter: providerGuard, // Protéger cette route pour les providers seulement
+    children: [
+      {
+        path: 'dashboard',
+        component: ProviderOverview,
+      },
+      {
+        path: 'profile',
+        component: ProviderProfile,
+      },
+      {
+        path: 'appointments',
+        component: ProviderAppointments,
+      },
+      {
+        path: 'calendar/today',
+        component: ProviderCalendarToday,
+      },
+      {
+        path: 'calendar',
+        component: ProviderCalendar,
+      },
+      {
+        path: '',
+        redirect: '/provider/dashboard',
+      },
+    ],
+  },
+  {
     path: '/test-auth',
     component: TestAuth, // Page de test - pas de guard
   },
-  { path: '/', redirect: '/login' },
+  {
+    path: '/',
+    redirect: () => {
+      // Redirection intelligente selon le rôle
+      const userRole = localStorage.getItem('userRole')
+      const token = localStorage.getItem('accessToken')
+
+      if (token && userRole === 'provider') {
+        return '/provider/dashboard'
+      } else if (token) {
+        return '/providers'
+      } else {
+        return '/login'
+      }
+    },
+  },
 ]
 
 export const router = createRouter({

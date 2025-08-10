@@ -22,9 +22,23 @@ function handleSubmit(e: Event) {
     { email: email.value, password: password.value },
     {
       onSuccess: data => {
+        console.log("📥 Données reçues de l'API:", data)
 
-        login(data)
-        router.push('/providers')
+        const userRole = login(data)
+        console.log('🔄 Redirection avec rôle:', userRole)
+        console.log(
+          '💾 localStorage userRole:',
+          localStorage.getItem('userRole'),
+        )
+
+        // Redirection intelligente selon le rôle
+        if (userRole === 'provider') {
+          console.log('➡️ Redirection vers provider dashboard')
+          router.push('/provider/dashboard')
+        } else {
+          console.log('➡️ Redirection vers providers list')
+          router.push('/providers')
+        }
       },
       onError: error => {
         console.error('Erreur de connexion:', error)

@@ -2,7 +2,7 @@
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ArrowLongLeftIcon, ArrowLongRightIcon } from '@heroicons/vue/20/solid'
-import { PhoneIcon, EnvelopeIcon } from '@heroicons/vue/24/solid'
+import { PhoneIcon } from '@heroicons/vue/24/solid'
 import { useProvidersQuery } from '../hooksQuerie/useProvidersQuery'
 
 const { t } = useI18n()
