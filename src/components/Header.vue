@@ -5,13 +5,16 @@
       aria-label="Global"
     >
       <div class="flex lg:flex-1">
-        <a href="#" class="-m-1.5 p-1.5">
+        <RouterLink
+          :to="isProvider ? '/provider/dashboard' : '/'"
+          class="-m-1.5 p-1.5"
+        >
           <img
             class="h-16 w-auto mx-auto"
             :src="logo"
             alt="Logo de l'entreprise"
           />
-        </a>
+        </RouterLink>
       </div>
       <div class="flex lg:hidden">
         <button
@@ -23,7 +26,10 @@
         </button>
       </div>
       <div class="hidden lg:flex lg:gap-x-12">
-        <template v-if="isAuthenticated">
+        <!-- Debug temporaire -->
+        <!-- {{ console.log('Template Debug - isAuthenticated:', isAuthenticated, 'isProvider:', isProvider, 'role:', currentUser?.role) }} -->
+
+        <template v-if="isAuthenticated && !isProvider">
           <RouterLink
             v-for="item in authenticatedNavigation"
             :key="item.name"
@@ -33,7 +39,7 @@
             {{ item.name }}
           </RouterLink>
         </template>
-        <template v-else>
+        <template v-else-if="!isAuthenticated">
           <a
             v-for="item in navigation"
             :key="item.name"
@@ -78,13 +84,12 @@
         class="fixed inset-y-0 right-0 z-50 w-full bg-white p-6 sm:max-w-sm"
       >
         <div class="flex items-center justify-between">
-          <a href="#" class="-m-1.5 p-1.5">
-            <img
-              class="h-8 w-auto"
-              src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-              alt="Your Company"
-            />
-          </a>
+          <RouterLink
+            :to="isProvider ? '/provider/dashboard' : '/'"
+            class="-m-1.5 p-1.5"
+          >
+            <img class="h-8 w-auto" :src="logo" alt="Your Company" />
+          </RouterLink>
           <button
             @click="mobileMenuOpen = false"
             class="-m-2.5 rounded-md p-2.5 text-gray-700"
@@ -94,7 +99,7 @@
         </div>
         <div class="mt-6">
           <div class="space-y-2">
-            <template v-if="isAuthenticated">
+            <template v-if="isAuthenticated && !isProvider">
               <RouterLink
                 v-for="item in authenticatedNavigation"
                 :key="item.name"
@@ -105,7 +110,7 @@
                 {{ item.name }}
               </RouterLink>
             </template>
-            <template v-else>
+            <template v-else-if="!isAuthenticated">
               <a
                 v-for="item in navigation"
                 :key="item.name"
@@ -158,6 +163,20 @@ const mobileMenuOpen = ref(false)
 
 // Utilisation du composable d'authentification
 const { isAuthenticated, currentUser, logout } = useAuth()
+
+// Vérifier si l'utilisateur connecté est un prestataire
+const isProvider = computed(() => {
+  const userRole = localStorage.getItem('userRole')
+  const roleFromUser = currentUser.value?.role
+
+  console.log('Debug Header - userRole from localStorage:', userRole)
+  console.log('Debug Header - roleFromUser:', roleFromUser)
+  console.log('Debug Header - currentUser.value:', currentUser.value)
+
+  const result = userRole === 'provider' || roleFromUser === 'provider'
+  console.log('Debug Header - isProvider result:', result)
+  return result
+})
 
 const navigation = computed(() => [
   { name: t('message.navigation.calendar'), href: '#' },

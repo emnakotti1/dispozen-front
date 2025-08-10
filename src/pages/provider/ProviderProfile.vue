@@ -16,7 +16,32 @@
         <h3 class="text-base font-semibold leading-6 text-gray-900 mb-4">
           Informations personnelles
         </h3>
-        <form @submit.prevent="updateProfile" class="space-y-6">
+
+        <!-- Loading state for user profile -->
+        <div v-if="isLoadingUser" class="text-center py-8">
+          <div
+            class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mx-auto"
+          ></div>
+          <p class="mt-2 text-sm text-gray-500">
+            Chargement des informations...
+          </p>
+        </div>
+
+        <!-- Error state for user profile -->
+        <div v-else-if="isErrorUser" class="text-center py-8">
+          <p class="text-sm text-red-600">
+            Erreur lors du chargement des informations personnelles
+          </p>
+          <button
+            @click="() => refetchUser()"
+            class="mt-2 text-sm text-indigo-600 hover:text-indigo-500"
+          >
+            Réessayer
+          </button>
+        </div>
+
+        <!-- Profile form -->
+        <form v-else @submit.prevent="updateProfile" class="space-y-6">
           <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div>
               <label
@@ -82,24 +107,67 @@
           </div>
 
           <div>
-            <label for="address" class="block text-sm font-medium text-gray-700"
-              >Adresse</label
-            >
-            <textarea
-              id="address"
+            <p class="block text-sm font-medium text-gray-700 mb-2">
+              Localisation
+            </p>
+            <AddressMap
+              ref="addressMapRef"
               v-model="profileForm.address"
-              rows="2"
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            ></textarea>
+              v-model:postal-code="profileForm.postalCode"
+              v-model:city="profileForm.city"
+              v-model:governorate="profileForm.governorate"
+              @coordinates-updated="onCoordinatesUpdated"
+            />
+          </div>
+
+          <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
+            <div>
+              <label
+                for="postalCode"
+                class="block text-sm font-medium text-gray-700"
+                >Code postal</label
+              >
+              <input
+                type="text"
+                id="postalCode"
+                v-model="profileForm.postalCode"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div>
+              <label for="city" class="block text-sm font-medium text-gray-700"
+                >Ville</label
+              >
+              <input
+                type="text"
+                id="city"
+                v-model="profileForm.city"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div>
+              <label
+                for="governorate"
+                class="block text-sm font-medium text-gray-700"
+                >Gouvernorat</label
+              >
+              <input
+                type="text"
+                id="governorate"
+                v-model="profileForm.governorate"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                placeholder="Département/Région"
+              />
+            </div>
           </div>
 
           <div class="flex justify-end">
             <button
               type="submit"
-              :disabled="isUpdating"
+              :disabled="isUpdatingUser"
               class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
             >
-              <span v-if="isUpdating">Mise à jour...</span>
+              <span v-if="isUpdatingUser">Mise à jour...</span>
               <span v-else>Mettre à jour</span>
             </button>
           </div>
@@ -465,6 +533,7 @@ import { ref, reactive, onMounted, watch } from 'vue'
 import { useAuth } from '../../composables/useAuth'
 import { PlusIcon, ClockIcon } from '@heroicons/vue/24/outline'
 import ServiceModal from '../../components/ServiceModal.vue'
+import AddressMap from '../../components/AddressMap.vue'
 import {
   useProviderServices,
   useCreateService,
@@ -479,24 +548,87 @@ import {
   useMyWorkingHours,
   useUpdateMyWorkingHours,
   getDayLabel,
-} from '../../hooksQuerie/workingHours' // Composables
+} from '../../hooksQuerie/workingHours'
+import {
+  useUpdateUserMutation,
+  useUserByIdQuery,
+} from '../../hooksQuerie/users'
+
+// Composables
 const { currentUser } = useAuth()
 
+// Référence vers le composant AddressMap
+const addressMapRef = ref<any>(null)
+
+// User queries and mutations
+const {
+  data: userProfile,
+  isLoading: isLoadingUser,
+  isError: isErrorUser,
+  refetch: refetchUser,
+} = useUserByIdQuery(currentUser.value?.id || '')
+const { mutate: updateUserMutation, isPending: isUpdatingUser } =
+  useUpdateUserMutation()
+
 // State
-const isUpdating = ref(false)
 const isUpdatingHours = ref(false)
 const showAddServiceModal = ref(false)
 const editingService = ref<any>(null)
 
 // Profile form
 const profileForm = reactive({
-  firstname: currentUser.value?.firstname || '',
-  lastname: currentUser.value?.lastname || '',
-  email: currentUser.value?.email || '',
+  firstname: '',
+  lastname: '',
+  email: '',
   phone: '',
   bio: '',
   address: '',
+  postalCode: '',
+  city: '',
+  governorate: '',
+  imageUrl: '',
 })
+
+// Watch for user profile changes from API to update form
+watch(
+  userProfile,
+  newProfile => {
+    if (newProfile) {
+      profileForm.firstname = newProfile.firstName || ''
+      profileForm.lastname = newProfile.lastName || ''
+      profileForm.email = newProfile.email || ''
+      profileForm.phone = newProfile.phoneNumber || ''
+      profileForm.bio = newProfile.biography || ''
+      profileForm.address = newProfile.address || ''
+      profileForm.postalCode = newProfile.postalCode || ''
+      profileForm.city = newProfile.city || ''
+      profileForm.governorate = newProfile.governorate || ''
+      profileForm.imageUrl = newProfile.imageUrl || ''
+
+      // Forcer le géocodage de l'adresse après un délai
+      if (newProfile.address && addressMapRef.value) {
+        console.log('Forçage du géocodage pour:', newProfile.address)
+        setTimeout(() => {
+          addressMapRef.value?.forceGeocodeAddress(newProfile.address)
+        }, 1000)
+      }
+    }
+  },
+  { immediate: true },
+)
+
+// Fallback: watch for currentUser changes if userProfile is not loaded yet
+watch(
+  currentUser,
+  newUser => {
+    if (newUser && !userProfile.value) {
+      profileForm.firstname = newUser.firstname || ''
+      profileForm.lastname = newUser.lastname || ''
+      profileForm.email = newUser.email || ''
+    }
+  },
+  { immediate: true },
+)
 
 // Real services data from API
 const {
@@ -599,16 +731,52 @@ watch(
 )
 
 // Methods
+const onCoordinatesUpdated = (coordinates: { lat: number; lng: number }) => {
+  console.log('Coordonnées mises à jour:', coordinates)
+  // Vous pouvez sauvegarder les coordonnées si nécessaire
+  // Par exemple dans le profil utilisateur ou dans une base de données séparée
+}
+
 const updateProfile = async () => {
-  isUpdating.value = true
+  if (!currentUser.value?.id) {
+    console.error('User ID not found')
+    return
+  }
+
   try {
-    // API call to update profile
-    await new Promise(resolve => setTimeout(resolve, 1000)) // Simulation
-    console.log('Profile updated:', profileForm)
+    // Prepare user data for API
+    const userData = {
+      firstName: profileForm.firstname,
+      lastName: profileForm.lastname,
+      email: profileForm.email,
+      phoneNumber: profileForm.phone,
+      biography: profileForm.bio,
+      address: profileForm.address,
+      postalCode: profileForm.postalCode,
+      city: profileForm.city,
+      governorate: profileForm.governorate,
+      imageUrl: profileForm.imageUrl,
+    }
+
+    // Call API to update user
+    updateUserMutation(
+      {
+        id: currentUser.value.id,
+        userData,
+      },
+      {
+        onSuccess: () => {
+          console.log('✅ Profil mis à jour avec succès')
+          // Reload user profile data from API
+          refetchUser()
+        },
+        onError: error => {
+          console.error('❌ Erreur lors de la mise à jour du profil:', error)
+        },
+      },
+    )
   } catch (error) {
     console.error('Error updating profile:', error)
-  } finally {
-    isUpdating.value = false
   }
 }
 
@@ -674,7 +842,11 @@ const saveService = (serviceData: any) => {
 
 // Load data on mount
 onMounted(() => {
-  // Load profile data from API
-  // loadProfileData()
+  // Vérifier si nous avons déjà une adresse après le montage
+  setTimeout(() => {
+    if (profileForm.address && addressMapRef.value) {
+      console.log("Géocodage de l'adresse au montage:", profileForm.address)
+    }
+  }, 2000) // Délai plus long pour s'assurer que tout est prêt
 })
 </script>

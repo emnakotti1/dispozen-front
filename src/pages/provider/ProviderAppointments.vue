@@ -253,12 +253,6 @@
                     >
                       <div class="flex items-center justify-end space-x-2">
                         <button
-                          @click="editAppointment(appointment)"
-                          class="text-indigo-600 hover:text-indigo-900"
-                        >
-                          Modifier
-                        </button>
-                        <button
                           v-if="appointment.status === 'pending'"
                           @click="confirmAppointment(appointment.id)"
                           :disabled="isConfirmingAppointment"
@@ -268,13 +262,6 @@
                             >Confirmation...</span
                           >
                           <span v-else>Confirmer</span>
-                        </button>
-                        <button
-                          v-if="appointment.status === 'confirmed'"
-                          @click="markAsCompleted(appointment.id)"
-                          class="text-blue-600 hover:text-blue-900"
-                        >
-                          Terminer
                         </button>
                         <button
                           v-if="
@@ -536,10 +523,6 @@ const resetFilters = () => {
   currentPage.value = 1
 }
 
-const editAppointment = (appointment: any) => {
-  editingAppointment.value = { ...appointment }
-}
-
 const confirmAppointment = async (appointmentId: string) => {
   try {
     console.log('🔄 Confirmation du rendez-vous:', appointmentId)
@@ -548,13 +531,6 @@ const confirmAppointment = async (appointmentId: string) => {
     // The hook will automatically refresh the data via invalidateQueries
   } catch (error) {
     console.error('❌ Erreur lors de la confirmation:', error)
-  }
-}
-
-const markAsCompleted = async (appointmentId: string) => {
-  const appointment = appointments.value.find(apt => apt.id === appointmentId)
-  if (appointment) {
-    appointment.status = 'confirmed' // Will be 'completed' when API supports it
   }
 }
 

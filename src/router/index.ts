@@ -9,6 +9,7 @@ import TestAuth from '../pages/TestAuth.vue'
 import ProviderLayout from '../layouts/ProviderLayout.vue'
 import ProviderOverview from '../pages/provider/ProviderOverview.vue'
 import ProviderProfile from '../pages/provider/ProviderProfile.vue'
+import TestUserUpdate from '../pages/TestUserUpdate.vue'
 import ProviderAppointments from '../pages/provider/ProviderAppointments.vue'
 import ProviderCalendarToday from '../pages/provider/ProviderCalendarToday.vue'
 import ProviderCalendar from '../pages/provider/ProviderCalendar.vue'
@@ -43,6 +44,11 @@ const routes = [
   {
     path: '/appointments',
     component: AppointmentsList,
+    beforeEnter: authGuard, // Protéger cette route
+  },
+  {
+    path: '/test-user-update',
+    component: TestUserUpdate,
     beforeEnter: authGuard, // Protéger cette route
   },
   {

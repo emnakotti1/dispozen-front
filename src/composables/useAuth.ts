@@ -22,8 +22,16 @@ export function useAuth() {
     return !!accessToken.value && !!user.value
   })
 
-  // Computed pour obtenir l'utilisateur actuel
-  const currentUser = computed(() => user.value)
+  // Computed pour obtenir l'utilisateur actuel avec le rôle
+  const currentUser = computed(() => {
+    if (user.value) {
+      return {
+        ...user.value,
+        role: localStorage.getItem('userRole') || undefined,
+      }
+    }
+    return null
+  })
 
   // Fonction pour décoder un token JWT
   const decodeJWT = (token: string) => {

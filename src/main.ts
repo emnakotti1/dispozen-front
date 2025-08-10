@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import './style.css'
 import './styles/theme-simple.css'
+import 'leaflet/dist/leaflet.css'
 import App from './App.vue'
 import { createI18n } from 'vue-i18n'
 import fr from '../locales/fr.json'
@@ -20,8 +21,8 @@ const i18n = createI18n({
   messages,
 })
 
-const app = createApp(App);
-app.use(router);
-app.use(i18n);
+const app = createApp(App)
+app.use(router)
+app.use(i18n)
 app.use(VueQueryPlugin)
-app.mount("#app");
+app.mount('#app')
