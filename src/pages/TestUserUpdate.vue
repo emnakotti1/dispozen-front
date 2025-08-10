@@ -174,8 +174,8 @@ const testForm = reactive({
   imageUrl: '',
 })
 
-const result = ref(null)
-const error = ref(null)
+const result = ref<any>(null)
+const error = ref<string | null>(null)
 
 // Initialize form with user profile data from API
 watch(
@@ -227,8 +227,7 @@ const testUpdate = () => {
     {
       onSuccess: data => {
         result.value = data
-        console.log('✅ Endpoint PUT /users/:id testé avec succès:', data)
-      },
+        },
       onError: err => {
         error.value = err.message || 'Erreur inconnue'
         console.error("❌ Erreur lors du test de l'endpoint:", err)

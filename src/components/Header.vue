@@ -27,7 +27,7 @@
       </div>
       <div class="hidden lg:flex lg:gap-x-12">
         <!-- Debug temporaire -->
-        <!-- {{ console.log('Template Debug - isAuthenticated:', isAuthenticated, 'isProvider:', isProvider, 'role:', currentUser?.role) }} -->
+        <!-- {{ }} -->
 
         <template v-if="isAuthenticated && !isProvider">
           <RouterLink
@@ -169,12 +169,7 @@ const isProvider = computed(() => {
   const userRole = localStorage.getItem('userRole')
   const roleFromUser = currentUser.value?.role
 
-  console.log('Debug Header - userRole from localStorage:', userRole)
-  console.log('Debug Header - roleFromUser:', roleFromUser)
-  console.log('Debug Header - currentUser.value:', currentUser.value)
-
   const result = userRole === 'provider' || roleFromUser === 'provider'
-  console.log('Debug Header - isProvider result:', result)
   return result
 })
 

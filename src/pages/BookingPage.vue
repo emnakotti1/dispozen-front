@@ -393,14 +393,6 @@ const submitBooking = () => {
     return
   }
 
-  console.log('Submitting booking with data:', {
-    providerId,
-    serviceId,
-    date: bookingForm.value.date,
-    startTime: bookingForm.value.startTime,
-    notes: bookingForm.value.notes,
-  })
-
   createAppointment({
     providerId,
     serviceId,
@@ -431,9 +423,6 @@ watch(
       bookingForm.value.startTime &&
       isSlotUnavailable(bookingForm.value.startTime)
     ) {
-      console.log(
-        'Créneau sélectionné devenu indisponible, désélection automatique',
-      )
       bookingForm.value.startTime = ''
     }
   },

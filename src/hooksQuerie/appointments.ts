@@ -85,7 +85,6 @@ export function useAppointments() {
   } = useQuery({
     queryKey,
     queryFn: () => {
-      console.log('Fetching appointments for user:', currentUser.value?.id)
       return getAppointments(currentUser.value!.id)
     },
     enabled: computed(() => !!currentUser.value?.id),
@@ -110,11 +109,6 @@ export function useCancelAppointment() {
   const mutation = useMutation({
     mutationFn: cancelAppointment,
     onSuccess: async (_, appointmentId) => {
-      console.log(
-        'Appointment cancelled successfully, updating cache for user:',
-        currentUser.value?.id,
-      )
-
       const queryKey = ['appointments', currentUser.value?.id]
 
       // Mettre à jour directement les données dans le cache
@@ -133,8 +127,6 @@ export function useCancelAppointment() {
         queryKey,
       })
 
-      console.log('Cache updated and queries invalidated')
-
       // Afficher un message de succès
       successMessage.value = 'Rendez-vous annulé avec succès'
       showSuccess.value = true
@@ -150,7 +142,6 @@ export function useCancelAppointment() {
   })
 
   const cancelAppointmentMutation = (appointmentId: string) => {
-    console.log('Cancelling appointment:', appointmentId)
     mutation.mutate(appointmentId)
   }
 
@@ -175,7 +166,6 @@ export function useProviderAppointments(providerId: string) {
   } = useQuery({
     queryKey,
     queryFn: () => {
-      console.log('Fetching appointments for provider:', providerId)
       return getProviderAppointments(providerId)
     },
     enabled: computed(() => !!providerId),
@@ -230,10 +220,8 @@ export function useConfirmAppointment() {
   })
 
   const confirmAppointmentFn = async (appointmentId: string) => {
-    console.log('🔄 Hook: Début confirmation appointment:', appointmentId)
     try {
       const result = await mutation.mutateAsync(appointmentId)
-      console.log('✅ Hook: Confirmation réussie:', result)
       return result
     } catch (error) {
       console.error('❌ Hook: Erreur confirmation:', error)

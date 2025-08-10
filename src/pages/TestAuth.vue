@@ -115,8 +115,7 @@ const providerToken =
 
 const testTokenDecoding = () => {
   try {
-    const payload = JSON.parse(atob(testToken.split('.')[1]))
-    console.log('🎫 Token décodé:', payload)
+    JSON.parse(atob(testToken.split('.')[1]))
     alert('Vérifiez la console pour voir le token décodé !')
   } catch (error) {
     console.error('❌ Erreur décodage:', error)
@@ -131,7 +130,6 @@ const testManualLogin = () => {
     role: 'client',
   }
 
-  console.log('🧪 Simulation de connexion CLIENT avec:', mockApiResponse)
   login(mockApiResponse)
 
   setTimeout(() => {
@@ -157,7 +155,6 @@ const testProviderLogin = () => {
     },
   }
 
-  console.log('🧪 Simulation de connexion PROVIDER avec:', mockProviderResponse)
   const userRole = login(mockProviderResponse)
 
   setTimeout(() => {
@@ -182,21 +179,13 @@ const clearAuth = () => {
 }
 
 const testRealProviderLogin = () => {
-  console.log('🧪 Test de connexion provider avec la vraie API...')
   isLoadingProvider.value = true
 
   loginMutation(
     { email: 'provider@gmail.com', password: 'provider' },
     {
       onSuccess: data => {
-        console.log("📥 Données reçues de l'API:", data)
-
         const userRole = login(data)
-        console.log('🔄 Rôle utilisateur:', userRole)
-        console.log(
-          '💾 localStorage userRole:',
-          localStorage.getItem('userRole'),
-        )
 
         setTimeout(() => {
           if (isAuthenticated.value) {

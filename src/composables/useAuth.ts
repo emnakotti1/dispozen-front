@@ -46,20 +46,15 @@ export function useAuth() {
 
   // Fonction pour se connecter
   const login = (loginResponse: LoginResponse) => {
-    console.log('🔑 Connexion avec données:', loginResponse)
-
     accessToken.value = loginResponse.access_token
     let tokenPayload = null
 
     // Si l'objet user n'est pas fourni, extraire les infos du token
     if (loginResponse.user) {
       user.value = loginResponse.user
-      console.log('👤 Utilisateur depuis réponse API:', loginResponse.user)
-    } else {
+      } else {
       // Décoder le token pour extraire les informations utilisateur
       tokenPayload = decodeJWT(loginResponse.access_token)
-      console.log('🎫 Token décodé:', tokenPayload)
-
       if (tokenPayload) {
         user.value = {
           id: tokenPayload.sub || 'unknown',
@@ -68,8 +63,7 @@ export function useAuth() {
             tokenPayload.firstName || tokenPayload.firstname || 'Utilisateur',
           lastname: tokenPayload.lastName || tokenPayload.lastname || '',
         }
-        console.log('👤 Utilisateur créé depuis token:', user.value)
-      }
+        }
     }
 
     // Sauvegarder dans localStorage
@@ -87,14 +81,7 @@ export function useAuth() {
     const userRole = loginResponse.role || (tokenPayload && tokenPayload.role)
     if (userRole) {
       localStorage.setItem('userRole', userRole)
-      console.log('🎭 Rôle utilisateur sauvegardé:', userRole)
-    }
-
-    console.log('💾 Données sauvegardées dans localStorage')
-    console.log(
-      "✅ État d'authentification:",
-      !!accessToken.value && !!user.value,
-    )
+      }
 
     // Retourner le rôle pour permettre une redirection immédiate
     return userRole

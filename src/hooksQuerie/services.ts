@@ -23,7 +23,6 @@ export function useProviderServices(providerId: string) {
   } = useQuery({
     queryKey,
     queryFn: () => {
-      console.log('Fetching services for provider:', providerId)
       return getProviderServices(providerId)
     },
     enabled: computed(() => !!providerId),
@@ -60,7 +59,7 @@ export function useCreateService() {
       hasError.value = false
       errorMessage.value = null
     },
-    onSuccess: (data, { providerId }) => {
+    onSuccess: (_, { providerId }) => {
       // Invalider les requêtes liées aux services du provider
       queryClient.invalidateQueries({
         queryKey: ['provider-services', providerId],
@@ -68,7 +67,6 @@ export function useCreateService() {
       isSuccess.value = true
       isSubmitting.value = false
       hasError.value = false
-      console.log('Service created successfully:', data)
     },
     onError: error => {
       console.error('Error creating service:', error)
@@ -122,7 +120,7 @@ export function useUpdateService() {
       hasError.value = false
       errorMessage.value = null
     },
-    onSuccess: data => {
+    onSuccess: () => {
       // Invalider les requêtes liées aux services
       queryClient.invalidateQueries({
         queryKey: ['provider-services'],
@@ -130,7 +128,6 @@ export function useUpdateService() {
       isSuccess.value = true
       isSubmitting.value = false
       hasError.value = false
-      console.log('Service updated successfully:', data)
     },
     onError: error => {
       console.error('Error updating service:', error)
@@ -189,8 +186,6 @@ export function useDeleteService() {
       setTimeout(() => {
         showSuccess.value = false
       }, 3000)
-
-      console.log('Service deleted successfully')
     },
     onError: error => {
       console.error('Error deleting service:', error)
@@ -198,7 +193,6 @@ export function useDeleteService() {
   })
 
   const cancelServiceMutation = (serviceId: string) => {
-    console.log('Cancelling service:', serviceId)
     mutation.mutate(serviceId)
   }
 
@@ -234,7 +228,6 @@ export function useToggleServiceStatus() {
           )
         },
       })
-      console.log('Service status updated successfully')
     },
     onError: error => {
       console.error('Error updating service status:', error)

@@ -20,7 +20,6 @@ export function useProviderWorkingHours(providerId: string) {
   } = useQuery({
     queryKey,
     queryFn: () => {
-      console.log('Fetching working hours for provider:', providerId)
       return getProviderWorkingHours(providerId)
     },
     enabled: computed(() => !!providerId),
@@ -48,7 +47,6 @@ export function useMyWorkingHours() {
   } = useQuery({
     queryKey,
     queryFn: () => {
-      console.log('Fetching my working hours')
       return getMyWorkingHours()
     },
     staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
@@ -90,7 +88,6 @@ export function useUpdateMyWorkingHours() {
       isSuccess.value = true
       isSubmitting.value = false
       hasError.value = false
-      console.log('Working hours updated successfully:', data)
     },
     onError: error => {
       console.error('Error updating working hours:', error)

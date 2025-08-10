@@ -525,9 +525,7 @@ const resetFilters = () => {
 
 const confirmAppointment = async (appointmentId: string) => {
   try {
-    console.log('🔄 Confirmation du rendez-vous:', appointmentId)
     await confirmAppointmentAPI(appointmentId)
-    console.log('✅ Rendez-vous confirmé avec succès')
     // The hook will automatically refresh the data via invalidateQueries
   } catch (error) {
     console.error('❌ Erreur lors de la confirmation:', error)
@@ -537,9 +535,7 @@ const confirmAppointment = async (appointmentId: string) => {
 const cancelAppointment = async (appointmentId: string) => {
   if (confirm('Êtes-vous sûr de vouloir annuler ce rendez-vous ?')) {
     try {
-      console.log('🔄 Annulation du rendez-vous:', appointmentId)
       await cancelAppointmentAPI(appointmentId)
-      console.log('✅ Rendez-vous annulé avec succès')
       // The hook will automatically refresh the data via invalidateQueries
     } catch (error) {
       console.error("❌ Erreur lors de l'annulation:", error)

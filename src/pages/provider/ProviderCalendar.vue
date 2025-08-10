@@ -403,8 +403,7 @@ const monthlyStats = computed(() => {
   }
 })
 
-const selectAppointment = (appointment: any) => {
+const selectAppointment = (_: any) => {
   // Navigate to appointment details or show modal
-  console.log('Selected appointment:', appointment)
 }
 </script>

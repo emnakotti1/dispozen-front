@@ -96,7 +96,6 @@ onMounted(() => {
 // Fonction pour géocoder l'adresse initiale quand elle est fournie via les props
 const handleInitialAddress = async () => {
   if (props.modelValue && props.modelValue.trim() && map) {
-    console.log("Traitement de l'adresse initiale:", props.modelValue)
     localAddress.value = props.modelValue
     await searchAddress()
   }
@@ -105,15 +104,11 @@ const handleInitialAddress = async () => {
 watch(
   () => props.modelValue,
   (newValue, oldValue) => {
-    console.log('🔄 Props watch - newValue:', newValue, 'oldValue:', oldValue)
-
     if (newValue !== localAddress.value) {
       localAddress.value = newValue || ''
-      console.log('📝 localAddress mis à jour:', localAddress.value)
 
       // Si une nouvelle adresse est fournie et que la carte est initialisée
       if (newValue && newValue.trim() && map && newValue !== oldValue) {
-        console.log('🚀 Déclenchement géocodage automatique pour:', newValue)
         setTimeout(async () => {
           await searchAddress()
         }, 500)
@@ -125,7 +120,6 @@ watch(
 
 const initMap = () => {
   if (!mapContainer.value) {
-    console.log('Container not ready, retrying...')
     setTimeout(() => initMap(), 100)
     return
   }
@@ -154,7 +148,6 @@ const initMap = () => {
     setTimeout(() => {
       if (map) {
         map.invalidateSize()
-        console.log('Map size invalidated')
 
         // Géocoder l'adresse existante après que la carte soit prête
         setTimeout(() => {
@@ -162,8 +155,6 @@ const initMap = () => {
         }, 200)
       }
     }, 500)
-
-    console.log('Map initialized successfully')
   } catch (error) {
     console.error('Error initializing map:', error)
   }
@@ -189,11 +180,8 @@ const updateMarker = (lat: number, lng: number) => {
 
 const searchAddress = async () => {
   if (!localAddress.value.trim() || localAddress.value.length < 3) {
-    console.log('Adresse trop courte ou vide:', localAddress.value)
     return
   }
-
-  console.log("Recherche de l'adresse:", localAddress.value)
 
   try {
     const response = await fetch(
@@ -208,8 +196,6 @@ const searchAddress = async () => {
       const lat = parseFloat(result.lat)
       const lng = parseFloat(result.lon)
 
-      console.log('Coordonnées trouvées:', { lat, lng })
-      console.log("Détails de l'adresse:", result)
       updateMarker(lat, lng)
 
       // Utiliser les détails d'adresse structurés si disponibles
@@ -270,7 +256,7 @@ const searchAddress = async () => {
         }
       }
     } else {
-      console.log("Aucun résultat trouvé pour l'adresse:", localAddress.value)
+      // No results found for the address
     }
   } catch (error) {
     console.error('Erreur lors de la géocodage:', error)
@@ -342,17 +328,14 @@ const updateAddress = () => {
 // Méthode exposée pour forcer le géocodage depuis le parent
 const forceGeocodeAddress = async (address: string) => {
   if (!address || !address.trim()) {
-    console.log("Pas d'adresse à géocoder")
     return
   }
 
-  console.log('Force géocodage de:', address)
   localAddress.value = address
 
   if (map) {
     await searchAddress()
   } else {
-    console.log('Carte pas encore initialisée, géocodage différé')
     // Attendre que la carte soit prête
     const checkMap = setInterval(() => {
       if (map) {
@@ -362,6 +345,11 @@ const forceGeocodeAddress = async (address: string) => {
     }, 100)
   }
 }
+
+// Exposer les méthodes pour le composant parent
+defineExpose({
+  forceGeocodeAddress,
+})
 </script>
 
 <style scoped>

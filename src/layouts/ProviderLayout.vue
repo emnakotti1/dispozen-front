@@ -176,12 +176,9 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { useAuth } from '../composables/useAuth'
+import { useRoute } from 'vue-router'
 
 const route = useRoute()
-const router = useRouter()
-const { currentUser, logout: authLogout } = useAuth()
 
 // Page titles based on current route
 const pageTitle = computed(() => {
@@ -217,9 +214,4 @@ const pageDescription = computed(() => {
       return ''
   }
 })
-
-const logout = async () => {
-  await authLogout()
-  router.push('/login')
-}
 </script>

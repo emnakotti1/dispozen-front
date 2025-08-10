@@ -263,14 +263,6 @@
                   v-if="appointment.status === 'pending'"
                   @click="
                     () => {
-                      console.log(
-                        '🖱️ Clic détecté sur bouton confirmer pour:',
-                        appointment.id,
-                      )
-                      console.log(
-                        '🔍 Status de l\'appointment:',
-                        appointment.status,
-                      )
                       handleConfirmAppointment(appointment.id)
                     }
                   "
@@ -281,16 +273,6 @@
                   <span v-else>Confirmer</span>
                 </button>
                 <!-- Debug: Show if button should be visible -->
-                {{
-                  console.log(
-                    '👁️ Bouton visible pour appointment:',
-                    appointment.id,
-                    'Status:',
-                    appointment.status,
-                    'Should show:',
-                    appointment.status === 'pending',
-                  )
-                }}
               </div>
             </div>
           </div>
@@ -607,7 +589,6 @@ watch(
 
       // Forcer le géocodage de l'adresse après un délai
       if (newProfile.address && addressMapRef.value) {
-        console.log('Forçage du géocodage pour:', newProfile.address)
         setTimeout(() => {
           addressMapRef.value?.forceGeocodeAddress(newProfile.address)
         }, 1000)
@@ -731,8 +712,7 @@ watch(
 )
 
 // Methods
-const onCoordinatesUpdated = (coordinates: { lat: number; lng: number }) => {
-  console.log('Coordonnées mises à jour:', coordinates)
+const onCoordinatesUpdated = (_: { lat: number; lng: number }) => {
   // Vous pouvez sauvegarder les coordonnées si nécessaire
   // Par exemple dans le profil utilisateur ou dans une base de données séparée
 }
@@ -766,7 +746,6 @@ const updateProfile = async () => {
       },
       {
         onSuccess: () => {
-          console.log('✅ Profil mis à jour avec succès')
           // Reload user profile data from API
           refetchUser()
         },
@@ -792,7 +771,6 @@ const updateWorkingHours = async () => {
     }))
 
     await updateWorkingHoursMutation(workingHoursData)
-    console.log('Working hours updated successfully')
   } catch (error) {
     console.error('Error updating working hours:', error)
   } finally {
@@ -810,10 +788,8 @@ const toggleDayWorking = (dayIndex: number) => {
 }
 
 const handleConfirmAppointment = async (appointmentId: string) => {
-  console.log('🔄 Tentative de confirmation du rendez-vous:', appointmentId)
   try {
-    const result = await confirmAppointment(appointmentId)
-    console.log('✅ Rendez-vous confirmé avec succès:', result)
+    await confirmAppointment(appointmentId)
     // Success will be handled by the mutation's onSuccess callback
   } catch (error) {
     console.error('❌ Erreur lors de la confirmation du rendez-vous:', error)
@@ -845,7 +821,7 @@ onMounted(() => {
   // Vérifier si nous avons déjà une adresse après le montage
   setTimeout(() => {
     if (profileForm.address && addressMapRef.value) {
-      console.log("Géocodage de l'adresse au montage:", profileForm.address)
+      // Address geocoding is ready
     }
   }, 2000) // Délai plus long pour s'assurer que tout est prêt
 })

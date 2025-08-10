@@ -261,8 +261,8 @@ const {
 // Watch pour surveiller les changements dans appointments
 watch(
   appointments,
-  newAppointments => {
-    console.log('Appointments updated:', newAppointments)
+  _ => {
+    // Handle appointments changes
   },
   { deep: true },
 )
