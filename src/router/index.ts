@@ -5,6 +5,7 @@ import ProvidersList from '../pages/ProvidersList.vue'
 import ProviderServices from '../pages/ProviderServices.vue'
 import BookingPage from '../pages/BookingPage.vue'
 import AppointmentsList from '../pages/AppointmentsList.vue'
+import AppointmentDetails from '../pages/AppointmentDetails.vue'
 import TestAuth from '../pages/TestAuth.vue'
 import ProviderLayout from '../layouts/ProviderLayout.vue'
 import ProviderOverview from '../pages/provider/ProviderOverview.vue'
@@ -44,6 +45,11 @@ const routes = [
   {
     path: '/appointments',
     component: AppointmentsList,
+    beforeEnter: authGuard, // Protéger cette route
+  },
+  {
+    path: '/appointments/:id',
+    component: AppointmentDetails,
     beforeEnter: authGuard, // Protéger cette route
   },
   {

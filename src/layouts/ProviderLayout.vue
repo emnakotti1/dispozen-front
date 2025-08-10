@@ -158,9 +158,6 @@
                 </h2>
                 <p class="text-sm text-gray-600">{{ pageDescription }}</p>
               </div>
-
-            
-            
             </div>
           </div>
         </header>

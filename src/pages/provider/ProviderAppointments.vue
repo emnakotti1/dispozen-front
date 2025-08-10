@@ -206,7 +206,13 @@
                       class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
                     >
                       <div class="text-gray-900">
-                        {{ appointment.service.name }}
+                        <router-link 
+                          :to="`/appointments/${appointment.id}`"
+                          class="text-indigo-600 hover:text-indigo-800 font-medium underline decoration-dotted transition-colors cursor-pointer"
+                          title="Voir les détails de la réservation"
+                        >
+                          {{ appointment.service.name }}
+                        </router-link>
                       </div>
                       <div class="text-gray-500">
                         {{ appointment.service.description }}
@@ -252,6 +258,13 @@
                       class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0"
                     >
                       <div class="flex items-center justify-end space-x-2">
+                        <router-link
+                          :to="`/appointments/${appointment.id}`"
+                          class="text-indigo-600 hover:text-indigo-900 font-medium px-2 py-1 border border-indigo-300 rounded hover:bg-indigo-50 transition-colors"
+                          title="Voir les détails de la réservation"
+                        >
+                          Détails
+                        </router-link>
                         <button
                           v-if="appointment.status === 'pending'"
                           @click="confirmAppointment(appointment.id)"
@@ -264,11 +277,7 @@
                           <span v-else>Confirmer</span>
                         </button>
                         <button
-                          v-if="
-                            ['pending', 'confirmed'].includes(
-                              appointment.status,
-                            )
-                          "
+                          v-if="appointment.status === 'pending'"
                           @click="cancelAppointment(appointment.id)"
                           :disabled="isLoadingCancel.value"
                           class="text-red-600 hover:text-red-900 disabled:opacity-50"

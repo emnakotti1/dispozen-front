@@ -227,7 +227,7 @@ const testUpdate = () => {
     {
       onSuccess: data => {
         result.value = data
-        },
+      },
       onError: err => {
         error.value = err.message || 'Erreur inconnue'
         console.error("❌ Erreur lors du test de l'endpoint:", err)

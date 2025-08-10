@@ -59,9 +59,13 @@
           >
             <div class="flex-1">
               <div class="flex items-center space-x-2 mb-2">
-                <h3 class="text-lg font-semibold text-gray-900">
+                <router-link 
+                  :to="`/appointments/${appointment.id}`"
+                  class="text-lg font-semibold text-indigo-600 hover:text-indigo-800 underline decoration-dotted transition-colors cursor-pointer"
+                  title="Voir les détails de la réservation"
+                >
                   {{ appointment.service.name }}
-                </h3>
+                </router-link>
                 <span
                   :class="[
                     'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
@@ -174,6 +178,12 @@
             </div>
 
             <div class="mt-4 md:mt-0 md:ml-6 flex flex-col sm:flex-row gap-2">
+              <router-link
+                :to="`/appointments/${appointment.id}`"
+                class="px-4 py-2 text-sm font-medium text-indigo-700 bg-white border border-indigo-300 rounded-md shadow-sm hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-center"
+              >
+                Voir détails
+              </router-link>
               <button
                 type="button"
                 class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -181,7 +191,7 @@
                 {{ t('appointments.actions.modify') }}
               </button>
               <button
-                v-if="appointment.status !== 'cancelled'"
+                v-if="appointment.status !== 'cancelled' && appointment.status !== 'confirmed'"
                 type="button"
                 :disabled="isCancelling.value"
                 @click="
