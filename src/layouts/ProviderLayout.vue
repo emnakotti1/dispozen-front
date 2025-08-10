@@ -145,30 +145,6 @@
             </router-link>
           </div>
         </nav>
-
-        <!-- User Info -->
-        <div class="absolute bottom-0 w-64 p-4 border-t border-gray-200">
-          <div class="flex items-center">
-            <img
-              class="w-8 h-8 rounded-full"
-              src="https://ui-avatars.com/api/?name=Provider&background=6366f1&color=fff"
-              alt="Provider Avatar"
-            />
-            <div class="ml-3">
-              <p class="text-sm font-medium text-gray-700">
-                {{ currentUser?.firstname || 'Provider' }}
-                {{ currentUser?.lastname || '' }}
-              </p>
-              <p class="text-xs text-gray-500">{{ currentUser?.email }}</p>
-            </div>
-          </div>
-          <button
-            @click="logout"
-            class="mt-2 w-full text-left text-sm text-red-600 hover:text-red-700"
-          >
-            Se déconnecter
-          </button>
-        </div>
       </div>
 
       <!-- Main Content -->
