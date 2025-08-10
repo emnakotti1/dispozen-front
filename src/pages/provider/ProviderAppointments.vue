@@ -206,7 +206,7 @@
                       class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
                     >
                       <div class="text-gray-900">
-                        <router-link 
+                        <router-link
                           :to="`/appointments/${appointment.id}`"
                           class="text-indigo-600 hover:text-indigo-800 font-medium underline decoration-dotted transition-colors cursor-pointer"
                           title="Voir les détails de la réservation"

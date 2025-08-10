@@ -59,7 +59,7 @@
           >
             <div class="flex-1">
               <div class="flex items-center space-x-2 mb-2">
-                <router-link 
+                <router-link
                   :to="`/appointments/${appointment.id}`"
                   class="text-lg font-semibold text-indigo-600 hover:text-indigo-800 underline decoration-dotted transition-colors cursor-pointer"
                   title="Voir les détails de la réservation"
@@ -191,7 +191,10 @@
                 {{ t('appointments.actions.modify') }}
               </button>
               <button
-                v-if="appointment.status !== 'cancelled' && appointment.status !== 'confirmed'"
+                v-if="
+                  appointment.status !== 'cancelled' &&
+                  appointment.status !== 'confirmed'
+                "
                 type="button"
                 :disabled="isCancelling.value"
                 @click="

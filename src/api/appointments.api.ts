@@ -19,17 +19,40 @@ export type AppointmentStatus =
 
 export interface Appointment {
   id: string
+  createdAt: string
+  status: AppointmentStatus
+  isValidated: boolean
+  isCancelled: boolean
+  notes?: string
   client: {
     id: string
     firstName: string
     lastName: string
     email: string
+    phoneNumber?: string
+    imageUrl?: string
+    address?: string
+    postalCode?: string
+    city?: string
+    governorate?: string
+    biography?: string
+    registrationDate: string
+    role: string
   }
   provider: {
     id: string
     firstName: string
     lastName: string
     email: string
+    phoneNumber?: string
+    imageUrl?: string
+    address?: string
+    postalCode?: string
+    city?: string
+    governorate?: string
+    biography?: string
+    registrationDate: string
+    role: string
   }
   service: {
     id: string
@@ -38,18 +61,18 @@ export interface Appointment {
     price: number
     currency: string
     duration: number // en minutes
+    status: string
   }
   calendar: {
     id: string
     date: string
     startTime: string
     endTime: string
+    type: string
+    reason?: string
+    createdAt: string
+    serviceId: string
   } | null
-  status: AppointmentStatus
-  isValidated: boolean
-  isCancelled: boolean
-  notes?: string
-  createdAt: string
 }
 
 export async function createAppointment(
@@ -112,4 +135,19 @@ export async function getProviderAppointments(
   providerId: string,
 ): Promise<Appointment[]> {
   return apiFetch<Appointment[]>(`/appointment/prestataire/${providerId}`)
+}
+
+// Récupérer les détails d'une réservation
+export async function getAppointmentDetails(
+  appointmentId: string,
+): Promise<Appointment> {
+  try {
+    const result = await apiFetch<Appointment>(
+      `/appointment/details/${appointmentId}`,
+    )
+    return result
+  } catch (error) {
+    console.error('❌ API: Erreur récupération détails:', error)
+    throw error
+  }
 }

@@ -6,6 +6,7 @@ import {
   confirmAppointment,
   getAppointments,
   getProviderAppointments,
+  getAppointmentDetails,
   type CreateAppointmentDto,
 } from '../api/appointments.api'
 import { useRouter } from 'vue-router'
@@ -235,5 +236,26 @@ export function useConfirmAppointment() {
     isSuccess: computed(() => isSuccess.value),
     isError: computed(() => isError.value),
     errorMessage: computed(() => errorMessage.value),
+  }
+}
+
+// Hook pour récupérer les détails d'une réservation
+export function useAppointmentDetails(appointmentId: string) {
+  const queryKey = computed(() => ['appointment-details', appointmentId])
+
+  const { data, isLoading, isError, error, refetch } = useQuery({
+    queryKey: queryKey.value,
+    queryFn: () => getAppointmentDetails(appointmentId),
+    enabled: !!appointmentId, // Ne lance la requête que si on a un ID
+    retry: 2,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  })
+
+  return {
+    appointment: computed(() => data.value),
+    isLoading: computed(() => isLoading.value),
+    isError: computed(() => isError.value),
+    error: computed(() => error.value),
+    refetch,
   }
 }
