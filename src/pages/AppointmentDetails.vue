@@ -124,7 +124,9 @@
                     d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                   ></path>
                 </svg>
-                {{ currentUser?.role === 'provider' ? 'Client' : 'Prestataire' }}
+                {{
+                  currentUser?.role === 'provider' ? 'Client' : 'Prestataire'
+                }}
               </h2>
               <div class="bg-gray-50 rounded-lg p-4">
                 <div class="flex items-center">
@@ -132,32 +134,77 @@
                     class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center"
                   >
                     <span class="text-indigo-600 font-medium text-lg">
-                      {{ getInitials(currentUser?.role === 'provider' ? appointment.client : appointment.provider) }}
+                      {{
+                        getInitials(
+                          currentUser?.role === 'provider'
+                            ? appointment.client
+                            : appointment.provider,
+                        )
+                      }}
                     </span>
                   </div>
                   <div class="ml-4">
                     <h3 class="font-medium text-gray-900">
-                      {{ currentUser?.role === 'provider' ? appointment.client.firstName : appointment.provider.firstName }}
-                      {{ currentUser?.role === 'provider' ? appointment.client.lastName : appointment.provider.lastName }}
+                      {{
+                        currentUser?.role === 'provider'
+                          ? appointment.client.firstName
+                          : appointment.provider.firstName
+                      }}
+                      {{
+                        currentUser?.role === 'provider'
+                          ? appointment.client.lastName
+                          : appointment.provider.lastName
+                      }}
                     </h3>
                     <p class="text-gray-600">
-                      {{ currentUser?.role === 'provider' ? appointment.client.email : appointment.provider.email }}
+                      {{
+                        currentUser?.role === 'provider'
+                          ? appointment.client.email
+                          : appointment.provider.email
+                      }}
                     </p>
-                    <p v-if="(currentUser?.role === 'provider' ? appointment.client.phoneNumber : appointment.provider.phoneNumber)" class="text-gray-600">
-                      {{ currentUser?.role === 'provider' ? appointment.client.phoneNumber : appointment.provider.phoneNumber }}
+                    <p
+                      v-if="
+                        currentUser?.role === 'provider'
+                          ? appointment.client.phoneNumber
+                          : appointment.provider.phoneNumber
+                      "
+                      class="text-gray-600"
+                    >
+                      {{
+                        currentUser?.role === 'provider'
+                          ? appointment.client.phoneNumber
+                          : appointment.provider.phoneNumber
+                      }}
                     </p>
                   </div>
                 </div>
 
                 <!-- Additional information -->
-                <div v-if="currentUser?.role === 'provider' && appointment.client.biography" class="mt-4 pt-4 border-t border-gray-200">
+                <div
+                  v-if="
+                    currentUser?.role === 'provider' &&
+                    appointment.client.biography
+                  "
+                  class="mt-4 pt-4 border-t border-gray-200"
+                >
                   <h4 class="font-medium text-gray-900 mb-2">À propos</h4>
-                  <p class="text-gray-600 text-sm">{{ appointment.client.biography }}</p>
+                  <p class="text-gray-600 text-sm">
+                    {{ appointment.client.biography }}
+                  </p>
                 </div>
-                
-                <div v-if="currentUser?.role === 'client' && appointment.provider.biography" class="mt-4 pt-4 border-t border-gray-200">
+
+                <div
+                  v-if="
+                    currentUser?.role === 'client' &&
+                    appointment.provider.biography
+                  "
+                  class="mt-4 pt-4 border-t border-gray-200"
+                >
                   <h4 class="font-medium text-gray-900 mb-2">À propos</h4>
-                  <p class="text-gray-600 text-sm">{{ appointment.provider.biography }}</p>
+                  <p class="text-gray-600 text-sm">
+                    {{ appointment.provider.biography }}
+                  </p>
                 </div>
               </div>
             </div>
@@ -192,7 +239,11 @@
                       >Date</span
                     >
                     <p class="text-gray-900">
-                      {{ appointment.calendar ? formatDate(appointment.calendar.date) : 'Date non définie' }}
+                      {{
+                        appointment.calendar
+                          ? formatDate(appointment.calendar.date)
+                          : 'Date non définie'
+                      }}
                     </p>
                   </div>
                   <div v-if="appointment.calendar">
@@ -234,7 +285,11 @@
             </div>
 
             <!-- Address Information (only for providers when viewed by clients) -->
-            <div v-if="currentUser?.role === 'client' && appointment.provider.address">
+            <div
+              v-if="
+                currentUser?.role === 'client' && appointment.provider.address
+              "
+            >
               <h2
                 class="text-lg font-semibold text-gray-900 mb-4 flex items-center"
               >
@@ -262,9 +317,13 @@
               <div class="bg-gray-50 rounded-lg p-4">
                 <p class="text-gray-900">{{ appointment.provider.address }}</p>
                 <p v-if="appointment.provider.city" class="text-gray-900 mt-1">
-                  {{ appointment.provider.postalCode }} {{ appointment.provider.city }}
+                  {{ appointment.provider.postalCode }}
+                  {{ appointment.provider.city }}
                 </p>
-                <p v-if="appointment.provider.governorate" class="text-gray-600 text-sm mt-1">
+                <p
+                  v-if="appointment.provider.governorate"
+                  class="text-gray-600 text-sm mt-1"
+                >
                   {{ appointment.provider.governorate }}
                 </p>
               </div>
@@ -370,7 +429,9 @@ const { currentUser } = useAuth()
 const appointmentId = computed(() => route.params.id as string)
 
 // Récupérer les détails de la réservation via API
-const { appointment, isLoading, isError } = useAppointmentDetails(appointmentId.value)
+const { appointment, isLoading, isError } = useAppointmentDetails(
+  appointmentId.value,
+)
 
 // Simple loading states for demo
 const isCancelling = ref(false)
