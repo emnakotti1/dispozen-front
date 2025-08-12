@@ -278,7 +278,7 @@
                         </button>
                         <button
                           v-if="appointment.status === 'pending'"
-                          @click="cancelAppointment(appointment.id)"
+                          @click="openCancelModal(appointment)"
                           :disabled="isLoadingCancel.value"
                           class="text-red-600 hover:text-red-900 disabled:opacity-50"
                         >
@@ -395,11 +395,22 @@
       @close="closeModal"
       @save="saveAppointment"
     />
+    <ConfirmationModal
+      :open="isCancelOpen"
+      title="Annuler le rendez-vous"
+      message="Êtes-vous sûr de vouloir annuler ce rendez-vous ?"
+      :pending="isLoadingCancel.value"
+      confirm-label="Annuler"
+      cancel-label="Fermer"
+      @close="isCancelOpen = false"
+      @confirm="confirmCancel"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted } from 'vue'
+import ConfirmationModal from '../../components/ConfirmationModal.vue'
 import {
   PlusIcon,
   CalendarDaysIcon,
@@ -541,14 +552,24 @@ const confirmAppointment = async (appointmentId: string) => {
   }
 }
 
-const cancelAppointment = async (appointmentId: string) => {
-  if (confirm('Êtes-vous sûr de vouloir annuler ce rendez-vous ?')) {
-    try {
-      await cancelAppointmentAPI(appointmentId)
-      // The hook will automatically refresh the data via invalidateQueries
-    } catch (error) {
-      console.error("❌ Erreur lors de l'annulation:", error)
-    }
+// Cancel via modal
+const isCancelOpen = ref(false)
+const cancelTargetId = ref<string | null>(null)
+const openCancelModal = (apt: any) => {
+  cancelTargetId.value = apt.id
+  isCancelOpen.value = true
+}
+
+const confirmCancel = async () => {
+  if (!cancelTargetId.value) return
+  try {
+    await cancelAppointmentAPI(cancelTargetId.value)
+    // auto refresh via hook invalidation
+  } catch (error) {
+    console.error("❌ Erreur lors de l'annulation:", error)
+  } finally {
+    isCancelOpen.value = false
+    cancelTargetId.value = null
   }
 }
 

@@ -358,7 +358,7 @@
               <!-- Cancel button only for pending appointments -->
               <button
                 v-if="appointment.status === 'pending' && canCancel"
-                @click="handleCancelAppointment"
+                @click="isCancelOpen = true"
                 :disabled="isCancelling"
                 class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50"
               >
@@ -413,6 +413,16 @@
       </button>
     </div>
   </div>
+  <ConfirmationModal
+    :open="isCancelOpen"
+    title="Annuler la réservation"
+    message="Êtes-vous sûr de vouloir annuler cette réservation ?"
+    :pending="isCancelling"
+    confirm-label="Annuler"
+    cancel-label="Fermer"
+    @close="isCancelOpen = false"
+    @confirm="handleCancelConfirm"
+  />
 </template>
 
 <script setup lang="ts">
@@ -420,6 +430,7 @@ import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuth } from '../composables/useAuth'
 import { useAppointmentDetails } from '../hooksQuerie/appointments'
+import ConfirmationModal from '../components/ConfirmationModal.vue'
 
 // Get appointment ID from route
 const route = useRoute()
@@ -441,21 +452,21 @@ const isConfirming = ref(false)
 const canCancel = computed(() => true) // Logic to determine if user can cancel
 const canConfirm = computed(() => currentUser.value?.role === 'provider') // Only providers can confirm
 
-const handleCancelAppointment = async () => {
-  if (confirm('Êtes-vous sûr de vouloir annuler cette réservation ?')) {
-    isCancelling.value = true
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      if (appointment.value) {
-        appointment.value.status = 'cancelled'
-      }
-      router.push('/appointments')
-    } catch (error) {
-      console.error("Erreur lors de l'annulation:", error)
-    } finally {
-      isCancelling.value = false
+const isCancelOpen = ref(false)
+const handleCancelConfirm = async () => {
+  isCancelling.value = true
+  try {
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    if (appointment.value) {
+      appointment.value.status = 'cancelled'
     }
+    router.push('/appointments')
+  } catch (error) {
+    console.error("Erreur lors de l'annulation:", error)
+  } finally {
+    isCancelling.value = false
+    isCancelOpen.value = false
   }
 }
 

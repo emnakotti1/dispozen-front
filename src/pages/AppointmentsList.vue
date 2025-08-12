@@ -199,12 +199,7 @@
                 "
                 type="button"
                 :disabled="isCancelling.value"
-                @click="
-                  handleCancelAppointment(
-                    appointment.id,
-                    appointment.service.name,
-                  )
-                "
+                @click="openCancelModal(appointment)"
                 class="px-4 py-2 text-sm font-medium text-red-700 bg-white border border-red-300 rounded-md shadow-sm hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span v-if="isCancelling">{{
@@ -259,11 +254,21 @@
     @close="isEditOpen = false"
     @save="onEditSave"
   />
+  <ConfirmationModal
+    :open="isCancelOpen"
+    :title="t('appointments.actions.cancel')"
+    :message="cancelMessage"
+    :pending="isCancelling.value"
+    :confirm-label="t('appointments.actions.cancel')"
+    :cancel-label="t('common.close')"
+    @close="isCancelOpen = false"
+    @confirm="confirmCancel"
+  />
 </template>
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import {
   useAppointments,
   useCancelAppointment,
@@ -271,6 +276,7 @@ import {
 } from '../hooksQuerie/appointments'
 import arriere from '../assets/333.jpg'
 import AppointmentEditModal from '../components/AppointmentEditModal.vue'
+import ConfirmationModal from '../components/ConfirmationModal.vue'
 
 const { t } = useI18n()
 
@@ -295,16 +301,25 @@ watch(
 )
 
 // Fonction pour confirmer et annuler un rendez-vous
-const handleCancelAppointment = (
-  appointmentId: string,
-  serviceName: string,
-) => {
-  const confirmed = confirm(
-    `Êtes-vous sûr de vouloir annuler le rendez-vous pour "${serviceName}" ?`,
-  )
-  if (confirmed) {
-    cancelAppointment(appointmentId)
-  }
+// Confirmation d'annulation via modal
+const isCancelOpen = ref(false)
+const cancelTargetId = ref<string | null>(null)
+const cancelTargetService = ref<string>('')
+const cancelMessage = computed(
+  () =>
+    `Êtes-vous sûr de vouloir annuler le rendez-vous pour "${cancelTargetService.value}" ?`,
+)
+
+const openCancelModal = (apt: any) => {
+  cancelTargetId.value = apt.id
+  cancelTargetService.value = apt.service?.name || ''
+  isCancelOpen.value = true
+}
+
+const confirmCancel = () => {
+  if (!cancelTargetId.value) return
+  cancelAppointment(cancelTargetId.value)
+  isCancelOpen.value = false
 }
 
 // Fonction pour formater la date
