@@ -8,6 +8,15 @@ export interface CreateAppointmentDto {
   notes?: string // Notes additionnelles (optionnel)
 }
 
+// Champs potentiels pour mettre à jour un rendez-vous
+export interface UpdateAppointmentDto {
+  date?: string // YYYY-MM-DD
+  startTime?: string // HH:MM ou HH:MM:SS
+  endTime?: string // HH:MM ou HH:MM:SS
+  notes?: string
+  serviceId?: string
+}
+
 export const AppointmentStatus = {
   PENDING: 'pending',
   CONFIRMED: 'confirmed',
@@ -29,30 +38,30 @@ export interface Appointment {
     firstName: string
     lastName: string
     email: string
-    phoneNumber?: string
-    imageUrl?: string
-    address?: string
-    postalCode?: string
-    city?: string
-    governorate?: string
-    biography?: string
-    registrationDate: string
-    role: string
+    phoneNumber?: string | null
+    imageUrl?: string | null
+    address?: string | null
+    postalCode?: string | null
+    city?: string | null
+    governorate?: string | null
+    biography?: string | null
+    registrationDate?: string
+    role?: 'client' | 'provider'
   }
   provider: {
     id: string
     firstName: string
     lastName: string
     email: string
-    phoneNumber?: string
-    imageUrl?: string
-    address?: string
-    postalCode?: string
-    city?: string
-    governorate?: string
-    biography?: string
-    registrationDate: string
-    role: string
+    phoneNumber?: string | null
+    imageUrl?: string | null
+    address?: string | null
+    postalCode?: string | null
+    city?: string | null
+    governorate?: string | null
+    biography?: string | null
+    registrationDate?: string
+    role?: 'client' | 'provider'
   }
   service: {
     id: string
@@ -148,6 +157,23 @@ export async function getAppointmentDetails(
     return result
   } catch (error) {
     console.error('❌ API: Erreur récupération détails:', error)
+    throw error
+  }
+}
+
+// Mettre à jour un rendez-vous (ex: date/heure/notes/service)
+export async function updateAppointment(
+  id: string,
+  payload: UpdateAppointmentDto,
+): Promise<Appointment> {
+  try {
+    const result = await apiFetch<Appointment>(`/appointment/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(payload),
+    })
+    return result
+  } catch (error) {
+    console.error('❌ API: Erreur mise à jour rendez-vous:', error)
     throw error
   }
 }

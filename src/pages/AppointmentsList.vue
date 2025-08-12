@@ -185,7 +185,9 @@
                 Voir détails
               </router-link>
               <button
+                v-if="canModify(appointment)"
                 type="button"
+                @click="openEdit(appointment)"
                 class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 {{ t('appointments.actions.modify') }}
@@ -247,16 +249,28 @@
       </div>
     </div>
   </div>
+  <!-- Edit Modal -->
+  <AppointmentEditModal
+    :open="isEditOpen"
+    :appointment="
+      selectedAppointment || { id: '', service: {}, calendar: null }
+    "
+    :pending="isUpdating.value"
+    @close="isEditOpen = false"
+    @save="onEditSave"
+  />
 </template>
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { watch } from 'vue'
+import { ref, watch } from 'vue'
 import {
   useAppointments,
   useCancelAppointment,
+  useUpdateAppointment,
 } from '../hooksQuerie/appointments'
 import arriere from '../assets/333.jpg'
+import AppointmentEditModal from '../components/AppointmentEditModal.vue'
 
 const { t } = useI18n()
 
@@ -322,6 +336,50 @@ const getStatusText = (status: string) => {
       return t('appointments.status.cancelled')
     default:
       return status
+  }
+}
+
+// Règle des 24h: modification possible uniquement si le début est dans >= 24h
+const canModify = (appointment: any) => {
+  const cal = appointment?.calendar
+  if (!cal?.date || !cal?.startTime) return false
+  // Construire une date ISO sûre
+  const startTime =
+    cal.startTime.length === 5 ? `${cal.startTime}:00` : cal.startTime
+  const start = new Date(`${cal.date}T${startTime}`)
+  if (Number.isNaN(start.getTime())) return false
+  const now = new Date()
+  const diffMs = start.getTime() - now.getTime()
+  const hours = diffMs / (1000 * 60 * 60)
+  return hours >= 24
+}
+
+// Edition rendez-vous
+const isEditOpen = ref(false)
+const selectedAppointment = ref<any | null>(null)
+const { updateAppointment: updateAppointmentMut, isPending: isUpdating } =
+  useUpdateAppointment()
+
+const openEdit = (apt: any) => {
+  selectedAppointment.value = apt
+  isEditOpen.value = true
+}
+
+const onEditSave = async (payload: {
+  date: string
+  startTime: string
+  endTime?: string
+  notes?: string
+}) => {
+  if (!selectedAppointment.value?.id) return
+  try {
+    await updateAppointmentMut(selectedAppointment.value.id, payload)
+    isEditOpen.value = false
+  } catch (e: any) {
+    alert(
+      e?.message ||
+        'Impossible de mettre à jour le rendez-vous (règle des 24h côté serveur?).',
+    )
   }
 }
 </script>

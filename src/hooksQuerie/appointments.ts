@@ -7,7 +7,9 @@ import {
   getAppointments,
   getProviderAppointments,
   getAppointmentDetails,
+  updateAppointment,
   type CreateAppointmentDto,
+  type UpdateAppointmentDto,
 } from '../api/appointments.api'
 import { useRouter } from 'vue-router'
 import { useAuth } from '../composables/useAuth'
@@ -257,5 +259,40 @@ export function useAppointmentDetails(appointmentId: string) {
     isError: computed(() => isError.value),
     error: computed(() => error.value),
     refetch,
+  }
+}
+
+// Hook pour mettre à jour un rendez-vous (date/heure/notes/service)
+export function useUpdateAppointment() {
+  const queryClient = useQueryClient()
+
+  const mutation = useMutation({
+    mutationFn: ({
+      id,
+      payload,
+    }: {
+      id: string
+      payload: UpdateAppointmentDto
+    }) => updateAppointment(id, payload),
+    onSuccess: data => {
+      // Invalidate common queries to refresh lists and details
+      queryClient.invalidateQueries({ queryKey: ['appointments'] })
+      queryClient.invalidateQueries({ queryKey: ['provider-appointments'] })
+      queryClient.invalidateQueries({
+        queryKey: ['appointment-details', data.id],
+      })
+    },
+  })
+
+  const mutateUpdate = (id: string, payload: UpdateAppointmentDto) => {
+    return mutation.mutateAsync({ id, payload })
+  }
+
+  return {
+    updateAppointment: mutateUpdate,
+    isPending: computed(() => mutation.isPending),
+    isError: computed(() => mutation.isError),
+    error: computed(() => mutation.error),
+    data: computed(() => mutation.data),
   }
 }
