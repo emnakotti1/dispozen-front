@@ -1,4 +1,10 @@
 <template>
+   <div class="fixed inset-0 -z-10">
+    <div
+      class="absolute inset-0 bg-cover bg-center"
+      :style="{ backgroundImage: `url(${arriere})` }"
+    ></div>
+  </div>
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- Error State -->
     <div v-if="isError" class="text-center py-12">
@@ -431,7 +437,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useAuth } from '../composables/useAuth'
 import { useAppointmentDetails } from '../hooksQuerie/appointments'
 import ConfirmationModal from '../components/ConfirmationModal.vue'
-
+import arriere from '../assets/333.jpg'
 // Get appointment ID from route
 const route = useRoute()
 const router = useRouter()

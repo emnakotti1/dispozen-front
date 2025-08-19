@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { ArrowLongLeftIcon, ArrowLongRightIcon } from '@heroicons/vue/20/solid'
 import { PhoneIcon } from '@heroicons/vue/24/solid'
 import { useProvidersQuery } from '../hooksQuerie/useProvidersQuery'
-
+import arriere from '../assets/333.jpg'
 const { t } = useI18n()
 const searchQuery = ref('')
 const debouncedSearchQuery = ref('')
@@ -45,10 +45,14 @@ function getImageUrl(imagePath: string) {
 </script>
 
 <template>
+ <div class="fixed inset-0 -z-10">
+    <div
+      class="absolute inset-0 bg-cover bg-center"
+      :style="{ backgroundImage: `url(${arriere})` }"
+    ></div>
+  </div>
   <div class="relative min-h-screen py-10 px-6 max-w-7xl mx-auto">
-    <!-- Image d'arrière-plan fixe -->
-    <div class="fixed inset-0 bg-cover bg-center -z-10"></div>
-
+    
     <!-- Search Bar -->
     <div class="max-w-4xl mx-auto mb-8 relative z-10">
       <input
