@@ -1,0 +1,193 @@
+<template>
+  <header class="bg-white">
+    <nav
+      class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
+      aria-label="Global"
+    >
+      <div class="flex lg:flex-1">
+        <RouterLink
+          :to="isProvider ? '/provider/dashboard' : '/'"
+          class="-m-1.5 p-1.5"
+        >
+          <img
+            class="h-16 w-auto mx-auto"
+            :src="logo"
+            alt="Logo de l'entreprise"
+          />
+        </RouterLink>
+      </div>
+      <div class="flex lg:hidden">
+        <button
+          @click="mobileMenuOpen = true"
+          class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
+        >
+          <span class="sr-only">Open main menu</span>
+          <Bars3Icon class="size-6" />
+        </button>
+      </div>
+      <div class="hidden lg:flex lg:gap-x-12">
+        <!-- Debug temporaire -->
+        <!-- {{ }} -->
+
+        <template v-if="isAuthenticated && !isProvider">
+          <RouterLink
+            v-for="item in authenticatedNavigation"
+            :key="item.name"
+            :to="item.to"
+            class="text-sm font-semibold text-gray-900 hover:text-gray-600"
+          >
+            {{ item.name }}
+          </RouterLink>
+        </template>
+        <template v-else-if="!isAuthenticated">
+          <a
+            v-for="item in navigation"
+            :key="item.name"
+            :href="item.href"
+            class="text-sm font-semibold text-gray-900"
+          >
+            {{ item.name }}
+          </a>
+        </template>
+      </div>
+      <div
+        class="hidden lg:flex lg:flex-1 lg:justify-end lg:items-center lg:gap-4"
+      >
+        <div v-if="isAuthenticated" class="flex items-center gap-4">
+          <span class="text-sm text-gray-700">
+            Bonjour, {{ currentUser?.firstname }}
+          </span>
+          <button
+            @click="handleLogout"
+            class="text-sm font-semibold text-red-600 hover:text-red-500"
+          >
+            Déconnexion
+          </button>
+        </div>
+        <RouterLink
+          v-else
+          to="/login"
+          class="text-sm font-semibold text-gray-900"
+        >
+          {{ t('message.navigation.login') }} &rarr;
+        </RouterLink>
+      </div>
+    </nav>
+
+    <Dialog
+      as="div"
+      class="lg:hidden"
+      :open="mobileMenuOpen"
+      @close="mobileMenuOpen = false"
+    >
+      <DialogPanel
+        class="fixed inset-y-0 right-0 z-50 w-full bg-white p-6 sm:max-w-sm"
+      >
+        <div class="flex items-center justify-between">
+          <RouterLink
+            :to="isProvider ? '/provider/dashboard' : '/'"
+            class="-m-1.5 p-1.5"
+          >
+            <img class="h-8 w-auto" :src="logo" alt="Your Company" />
+          </RouterLink>
+          <button
+            @click="mobileMenuOpen = false"
+            class="-m-2.5 rounded-md p-2.5 text-gray-700"
+          >
+            <XMarkIcon class="size-6" />
+          </button>
+        </div>
+        <div class="mt-6">
+          <div class="space-y-2">
+            <template v-if="isAuthenticated && !isProvider">
+              <RouterLink
+                v-for="item in authenticatedNavigation"
+                :key="item.name"
+                :to="item.to"
+                class="block rounded-lg px-3 py-2 text-base font-semibold text-gray-900 hover:bg-gray-50"
+                @click="mobileMenuOpen = false"
+              >
+                {{ item.name }}
+              </RouterLink>
+            </template>
+            <template v-else-if="!isAuthenticated">
+              <a
+                v-for="item in navigation"
+                :key="item.name"
+                :href="item.href"
+                class="block rounded-lg px-3 py-2 text-base font-semibold text-gray-900 hover:bg-gray-50"
+              >
+                {{ item.name }}
+              </a>
+            </template>
+          </div>
+          <!-- Menu mobile authentification -->
+          <div class="mt-6 pt-6 border-t border-gray-200">
+            <div v-if="isAuthenticated" class="space-y-2">
+              <div class="text-base font-semibold text-gray-900">
+                Bonjour, {{ currentUser?.firstname }}
+              </div>
+              <button
+                @click="handleLogout"
+                class="block w-full text-left rounded-lg px-3 py-2 text-base font-semibold text-red-600 hover:bg-red-50"
+              >
+                Déconnexion
+              </button>
+            </div>
+            <RouterLink
+              v-else
+              to="/login"
+              class="block rounded-lg px-3 py-2 text-base font-semibold text-gray-900 hover:bg-gray-50"
+            >
+              {{ t('message.navigation.login') }}
+            </RouterLink>
+          </div>
+        </div>
+      </DialogPanel>
+    </Dialog>
+  </header>
+</template>
+
+<script setup>
+import { ref, computed } from 'vue'
+import { Dialog, DialogPanel } from '@headlessui/vue'
+import { Bars3Icon, XMarkIcon } from '@heroicons/vue/24/outline'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
+import { useAuth } from '../composables/useAuth'
+import logo from '../assets/logo.png'
+
+const { t } = useI18n()
+const router = useRouter()
+const mobileMenuOpen = ref(false)
+
+// Utilisation du composable d'authentification
+const { isAuthenticated, currentUser, logout } = useAuth()
+
+// Vérifier si l'utilisateur connecté est un prestataire
+const isProvider = computed(() => {
+  const userRole = localStorage.getItem('userRole')
+  const roleFromUser = currentUser.value?.role
+
+  const result = userRole === 'provider' || roleFromUser === 'provider'
+  return result
+})
+
+const navigation = computed(() => [
+  { name: t('message.navigation.calendar'), href: '#' },
+  { name: t('message.navigation.services'), href: '#' },
+  { name: t('message.navigation.contact'), href: '#' },
+])
+
+const authenticatedNavigation = computed(() => [
+  { name: t('navigation.providers'), to: '/providers' },
+  { name: t('navigation.appointments'), to: '/appointments' },
+])
+
+// Fonction de déconnexion
+const handleLogout = () => {
+  logout()
+  mobileMenuOpen.value = false
+  router.push('/login')
+}
+</script>

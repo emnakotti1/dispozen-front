@@ -1,0 +1,517 @@
+<template>
+  <div class="space-y-6">
+    <!-- Header -->
+    <div class="border-b border-gray-200 pb-5">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="text-lg font-medium leading-6 text-gray-900">
+            Calendrier du jour
+          </h3>
+          <p class="mt-2 max-w-4xl text-sm text-gray-500">
+            {{ formatDate(selectedDate) }}
+          </p>
+        </div>
+        <div class="flex items-center space-x-3">
+          <button
+            @click="goToPreviousDay"
+            class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            <ChevronLeftIcon class="h-4 w-4 mr-1" />
+            Jour précédent
+          </button>
+          <button
+            @click="goToToday"
+            class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            Aujourd'hui
+          </button>
+          <button
+            @click="goToNextDay"
+            class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            Jour suivant
+            <ChevronRightIcon class="h-4 w-4 ml-1" />
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Day Stats -->
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-4">
+      <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="p-5">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <CalendarDaysIcon
+                class="h-6 w-6 text-gray-400"
+                aria-hidden="true"
+              />
+            </div>
+            <div class="ml-5 w-0 flex-1">
+              <dl>
+                <dt class="text-sm font-medium text-gray-500 truncate">
+                  Total RDV
+                </dt>
+                <dd class="text-lg font-medium text-gray-900">
+                  {{ dayStats.total }}
+                </dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="p-5">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <CheckCircleIcon
+                class="h-6 w-6 text-green-400"
+                aria-hidden="true"
+              />
+            </div>
+            <div class="ml-5 w-0 flex-1">
+              <dl>
+                <dt class="text-sm font-medium text-gray-500 truncate">
+                  Confirmés
+                </dt>
+                <dd class="text-lg font-medium text-gray-900">
+                  {{ dayStats.confirmed }}
+                </dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="p-5">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <ClockIcon class="h-6 w-6 text-yellow-400" aria-hidden="true" />
+            </div>
+            <div class="ml-5 w-0 flex-1">
+              <dl>
+                <dt class="text-sm font-medium text-gray-500 truncate">
+                  En attente
+                </dt>
+                <dd class="text-lg font-medium text-gray-900">
+                  {{ dayStats.pending }}
+                </dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="p-5">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <CurrencyDollarIcon
+                class="h-6 w-6 text-green-500"
+                aria-hidden="true"
+              />
+            </div>
+            <div class="ml-5 w-0 flex-1">
+              <dl>
+                <dt class="text-sm font-medium text-gray-500 truncate">
+                  Revenus
+                </dt>
+                <dd class="text-lg font-medium text-gray-900">
+                  {{ dayStats.revenue }}€
+                </dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Timeline View -->
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+      <div class="px-4 py-5 sm:p-6">
+        <h3 class="text-base font-semibold leading-6 text-gray-900 mb-6">
+          Planning de la journée
+        </h3>
+
+        <div class="relative">
+          <!-- Time slots -->
+          <div class="space-y-0">
+            <div
+              v-for="hour in timeSlots"
+              :key="hour"
+              class="flex border-b border-gray-100"
+              :class="{ 'bg-blue-50': isCurrentHour(hour) }"
+            >
+              <!-- Hour label -->
+              <div class="w-20 flex-shrink-0 py-4 pr-4 text-right">
+                <div class="text-sm text-gray-500">{{ formatHour(hour) }}</div>
+              </div>
+
+              <!-- Appointments -->
+              <div class="flex-1 py-2 relative">
+                <div
+                  v-for="appointment in getAppointmentsForHour(hour)"
+                  :key="appointment.id"
+                  class="mb-2 p-3 rounded-lg border-l-4 cursor-pointer hover:shadow-md transition-shadow"
+                  :class="getAppointmentClasses(appointment)"
+                  @click="selectAppointment(appointment)"
+                >
+                  <div class="flex items-center justify-between">
+                    <div class="flex-1">
+                      <div class="text-sm font-medium text-gray-900">
+                        {{ appointment.client.name }}
+                      </div>
+                      <div class="text-sm text-gray-500">
+                        {{ appointment.service.name }}
+                      </div>
+                      <div class="text-xs text-gray-400 mt-1">
+                        {{ appointment.time }} -
+                        {{ getEndTime(appointment) }} ({{
+                          appointment.service.duration
+                        }}
+                        min)
+                      </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                      <span
+                        class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium"
+                        :class="getStatusClass(appointment.status)"
+                      >
+                        {{ getStatusLabel(appointment.status) }}
+                      </span>
+                      <span class="text-sm font-medium text-gray-900">
+                        {{ appointment.service.price }}€
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Empty time slot -->
+                <div
+                  v-if="getAppointmentsForHour(hour).length === 0"
+                  class="h-16 flex items-center text-gray-400 text-sm italic"
+                >
+                  Créneau libre
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Selected Appointment Details -->
+    <div v-if="selectedAppointment" class="bg-white shadow rounded-lg">
+      <div class="px-4 py-5 sm:p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-base font-semibold leading-6 text-gray-900">
+            Détails du rendez-vous
+          </h3>
+          <button
+            @click="selectedAppointment = null"
+            class="text-gray-400 hover:text-gray-500"
+          >
+            <XMarkIcon class="h-5 w-5" />
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <div>
+            <h4 class="text-sm font-medium text-gray-500">Client</h4>
+            <div class="mt-1 flex items-center">
+              <img
+                class="h-8 w-8 rounded-full"
+                :src="selectedAppointment.client.avatar"
+                :alt="selectedAppointment.client.name"
+              />
+              <div class="ml-3">
+                <div class="text-sm font-medium text-gray-900">
+                  {{ selectedAppointment.client.name }}
+                </div>
+                <div class="text-sm text-gray-500">
+                  {{ selectedAppointment.client.email }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h4 class="text-sm font-medium text-gray-500">Service</h4>
+            <div class="mt-1">
+              <div class="text-sm font-medium text-gray-900">
+                {{ selectedAppointment.service.name }}
+              </div>
+              <div class="text-sm text-gray-500">
+                {{ selectedAppointment.service.description }}
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h4 class="text-sm font-medium text-gray-500">Horaire</h4>
+            <div class="mt-1 text-sm text-gray-900">
+              {{ selectedAppointment.time }} -
+              {{ getEndTime(selectedAppointment) }}
+              <span class="text-gray-500">
+                ({{ selectedAppointment.service.duration }} minutes)
+              </span>
+            </div>
+          </div>
+
+          <div>
+            <h4 class="text-sm font-medium text-gray-500">Prix</h4>
+            <div class="mt-1 text-sm font-medium text-gray-900">
+              {{ selectedAppointment.service.price }}€
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-6 flex items-center justify-end space-x-3">
+          <button
+            v-if="selectedAppointment.status === 'pending'"
+            @click="confirmAppointment(selectedAppointment.id)"
+            class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+          >
+            Confirmer
+          </button>
+          <button
+            v-if="selectedAppointment.status === 'confirmed'"
+            @click="markAsCompleted(selectedAppointment.id)"
+            class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            Marquer comme terminé
+          </button>
+          <button
+            v-if="['pending', 'confirmed'].includes(selectedAppointment.status)"
+            @click="cancelAppointment(selectedAppointment.id)"
+            class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            Annuler
+          </button>
+          <button
+            @click="editAppointment(selectedAppointment)"
+            class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            Modifier
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
+import {
+  CalendarDaysIcon,
+  CheckCircleIcon,
+  ClockIcon,
+  CurrencyDollarIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  XMarkIcon,
+} from '@heroicons/vue/24/outline'
+import { useProviderAppointments } from '../../hooksQuerie/appointments'
+import { useAuth } from '../../composables/useAuth'
+
+// State
+const selectedDate = ref(new Date())
+const selectedAppointment = ref(null)
+
+// Get current user to fetch provider's appointments
+const { currentUser } = useAuth()
+
+// Fetch provider appointments
+const {
+  appointments: providerAppointments,
+  isLoading,
+  isError,
+  refetch,
+} = useProviderAppointments(currentUser.value?.id || '')
+
+// Convert API appointments to local format
+const appointments = computed(() => providerAppointments.value || [])
+
+// Time slots (8h à 19h)
+const timeSlots = Array.from({ length: 12 }, (_, i) => 8 + i)
+
+// Computed
+const dayAppointments = computed(() => {
+  const dateString = formatDateForComparison(selectedDate.value)
+  return appointments.value.filter(apt => apt.calendar?.date === dateString)
+})
+
+const dayStats = computed(() => {
+  const appts = dayAppointments.value
+  return {
+    total: appts.length,
+    confirmed: appts.filter(apt => apt.status === 'confirmed').length,
+    pending: appts.filter(apt => apt.status === 'pending').length,
+    revenue: appts
+      .filter(apt => apt.status === 'confirmed' || apt.status === 'cancelled')
+      .reduce((sum, apt) => sum + apt.service.price, 0),
+  }
+})
+
+// Methods
+function formatDate(date: Date) {
+  return date.toLocaleDateString('fr-FR', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+}
+
+function formatDateForComparison(date: Date) {
+  return date.toISOString().split('T')[0]
+}
+
+function formatHour(hour: number) {
+  return `${hour.toString().padStart(2, '0')}:00`
+}
+
+function isCurrentHour(hour: number) {
+  const now = new Date()
+  const isToday =
+    formatDateForComparison(selectedDate.value) === formatDateForComparison(now)
+  return isToday && now.getHours() === hour
+}
+
+function getAppointmentsForHour(hour: number) {
+  return dayAppointments.value.filter(apt => {
+    if (!apt.calendar?.startTime) return false
+    const aptHour = parseInt(apt.calendar.startTime.split(':')[0])
+    return aptHour === hour
+  })
+}
+
+function getEndTime(appointment: any) {
+  const [hours, minutes] = appointment.time.split(':').map(Number)
+  const endTime = new Date()
+  endTime.setHours(hours, minutes + appointment.service.duration)
+  return endTime.toTimeString().slice(0, 5)
+}
+
+function getAppointmentClasses(appointment: any) {
+  switch (appointment.status) {
+    case 'confirmed':
+      return 'bg-green-50 border-green-400'
+    case 'pending':
+      return 'bg-yellow-50 border-yellow-400'
+    case 'cancelled':
+      return 'bg-red-50 border-red-400'
+    case 'completed':
+      return 'bg-blue-50 border-blue-400'
+    default:
+      return 'bg-gray-50 border-gray-400'
+  }
+}
+
+function getStatusClass(status: string) {
+  switch (status) {
+    case 'confirmed':
+      return 'bg-green-100 text-green-800'
+    case 'pending':
+      return 'bg-yellow-100 text-yellow-800'
+    case 'cancelled':
+      return 'bg-red-100 text-red-800'
+    case 'completed':
+      return 'bg-blue-100 text-blue-800'
+    default:
+      return 'bg-gray-100 text-gray-800'
+  }
+}
+
+function getStatusLabel(status: string) {
+  switch (status) {
+    case 'confirmed':
+      return 'Confirmé'
+    case 'pending':
+      return 'En attente'
+    case 'cancelled':
+      return 'Annulé'
+    case 'completed':
+      return 'Terminé'
+    default:
+      return status
+  }
+}
+
+function goToPreviousDay() {
+  const newDate = new Date(selectedDate.value)
+  newDate.setDate(newDate.getDate() - 1)
+  selectedDate.value = newDate
+  selectedAppointment.value = null
+}
+
+function goToNextDay() {
+  const newDate = new Date(selectedDate.value)
+  newDate.setDate(newDate.getDate() + 1)
+  selectedDate.value = newDate
+  selectedAppointment.value = null
+}
+
+function goToToday() {
+  selectedDate.value = new Date()
+  selectedAppointment.value = null
+}
+
+function selectAppointment(appointment: any) {
+  selectedAppointment.value = appointment
+}
+
+function confirmAppointment(appointmentId: number) {
+  const appointment = appointments.value.find(apt => apt.id === appointmentId)
+  if (appointment) {
+    appointment.status = 'confirmed'
+    if (
+      selectedAppointment.value &&
+      selectedAppointment.value.id === appointmentId
+    ) {
+      selectedAppointment.value.status = 'confirmed'
+    }
+  }
+}
+
+function markAsCompleted(appointmentId: number) {
+  const appointment = appointments.value.find(apt => apt.id === appointmentId)
+  if (appointment) {
+    appointment.status = 'completed'
+    if (
+      selectedAppointment.value &&
+      selectedAppointment.value.id === appointmentId
+    ) {
+      selectedAppointment.value.status = 'completed'
+    }
+  }
+}
+
+function cancelAppointment(appointmentId: number) {
+  if (confirm('Êtes-vous sûr de vouloir annuler ce rendez-vous ?')) {
+    const appointment = appointments.value.find(apt => apt.id === appointmentId)
+    if (appointment) {
+      appointment.status = 'cancelled'
+      if (
+        selectedAppointment.value &&
+        selectedAppointment.value.id === appointmentId
+      ) {
+        selectedAppointment.value.status = 'cancelled'
+      }
+    }
+  }
+}
+
+function editAppointment(appointment: any) {
+  // Emit event to parent or show modal
+  console.log('Edit appointment:', appointment)
+}
+
+// Load data on mount
+onMounted(() => {
+  // Load appointments for selected date
+  // loadDayAppointments()
+})
+</script>

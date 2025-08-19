@@ -1,7 +1,136 @@
 {
+  "navigation": {
+    "providers": "Providers",
+    "appointments": "My Appointments"
+  },
   "message": {
     "hello": "Hello",
     "welcome": "Welcome",
-    "bye": "Goodbye"
+    "bye": "Goodbye",
+    "auth": {
+      "login": {
+        "title": "Sign in to your account",
+        "subtitle": "Don't have an account yet?",
+        "createAccount": "Create an account",
+        "email": "Email address",
+        "password": "Password",
+        "rememberMe": "Remember me",
+        "forgotPassword": "Forgot your password?",
+        "signIn": "Sign in",
+        "orContinueWith": "Or continue with",
+        "continueWithGoogle": "Continue with Google"
+      },
+      "registration": {
+        "title": "Create a new account",
+        "subtitle": "Already have an account?",
+        "signIn": "Sign in",
+        "email": "Email address",
+        "password": "Password",
+        "confirmPassword": "Confirm password",
+        "firstName": "First name",
+        "lastName": "Last name",
+        "createAccount": "Create account",
+        "orContinueWith": "Or continue with",
+        "continueWithGoogle": "Continue with Google",
+        "phoneNumber": "Phone number"
+      }
+    },
+    "navigation": {
+      "calendar": "Calendar",
+      "services": "Services",
+      "contact": "Contact",
+      "login": "Log in"
+    },
+    "footer": {
+      "copyright": "© 2025 DispZen. All rights reserved.",
+      "legal": "Legal Notice",
+      "contact": "Contact",
+      "linkedin": "LinkedIn"
+    },
+    "common": {
+      "loading": "Loading...",
+      "navigation": {
+        "services": "Our Services"
+      },
+      "button": {
+        "book": "Book"
+      },
+      "error": {
+        "loadingServices": "Error loading services."
+      },
+      "noData": {
+        "services": "No services found."
+      }
+    },
+    "providers": {
+      "search": {
+        "placeholder": "Search for a provider..."
+      },
+      "status": {
+        "loading": "Loading...",
+        "error": "Error loading data."
+      },
+      "pagination": {
+        "previous": "Previous",
+        "next": "Next"
+      }
+    },
+    "providerServices": {
+      "title": "Provider Services",
+      "subtitle": "List of services offered by this provider.",
+      "table": {
+        "headers": {
+          "name": "Name",
+          "description": "Description",
+          "price": "Price",
+          "action": "Action"
+        }
+      }
+    },
+    "booking": {
+      "title": "Book an Appointment",
+      "subtitle": "Choose the date and time that works best for you.",
+      "success": "Your appointment has been successfully confirmed! You will be redirected...",
+      "error": "An error occurred while booking. Please try again.",
+      "serviceInfo": {
+        "title": "Service Information",
+        "serviceName": "Service",
+        "price": "Price",
+        "duration": "Duration",
+        "minutes": "minutes",
+        "provider": "Provider",
+        "description": "Description"
+      },
+      "form": {
+        "date": "Preferred Date",
+        "time": "Preferred Time",
+        "notes": "Additional Notes",
+        "notesPlaceholder": "Additional information, special requests...",
+        "noSlotsAvailable": "No time slots available for this date",
+        "cancel": "Cancel",
+        "confirm": "Confirm Booking",
+        "submitting": "Booking in progress..."
+      }
+    },
+    "appointments": {
+      "title": "My Appointments",
+      "subtitle": "View and manage your upcoming appointments.",
+      "error": "Error loading appointments.",
+      "status": {
+        "confirmed": "Confirmed",
+        "pending": "Pending",
+        "cancelled": "Cancelled"
+      },
+      "actions": {
+        "modify": "Modify",
+        "cancel": "Cancel",
+        "cancelling": "Cancelling..."
+      },
+      "noAppointments": {
+        "title": "No appointments",
+        "subtitle": "You don't have any scheduled appointments yet.",
+        "bookNow": "Book now"
+      }
+    }
   }
 }

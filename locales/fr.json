@@ -1,7 +1,136 @@
 {
+  "navigation": {
+    "providers": "Prestataires",
+    "appointments": "Mes rendez-vous"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "navigation": {
+      "services": "Nos Services"
+    },
+    "error": {
+      "loadingServices": "Erreur lors du chargement des services."
+    },
+    "noData": {
+      "services": "Aucun service trouvé."
+    }
+  },
   "message": {
     "hello": "Bonjour",
     "welcome": "Bienvenue",
-    "bye": "Au revoir"
+    "bye": "Au revoir",
+    "auth": {
+      "login": {
+        "title": "Connexion à votre espace",
+        "subtitle": "Vous n'avez pas encore de compte ?",
+        "createAccount": "Créez un compte",
+        "email": "Adresse e-mail",
+        "password": "Mot de passe",
+        "rememberMe": "Se souvenir de moi",
+        "forgotPassword": "Mot de passe oublié ?",
+        "signIn": "Se connecter",
+        "orContinueWith": "Ou continuer avec",
+        "continueWithGoogle": "Continuer avec Google"
+      },
+      "registration": {
+        "title": "Créer un nouveau compte",
+        "subtitle": "Vous avez déjà un compte ?",
+        "signIn": "Connectez-vous",
+        "email": "Adresse e-mail",
+        "password": "Mot de passe",
+        "confirmPassword": "Confirmer le mot de passe",
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "createAccount": "Créer le compte",
+        "orContinueWith": "Ou continuer avec",
+        "continueWithGoogle": "Continuer avec Google",
+        "phoneNumber": "Numéro de téléphone"
+      }
+    },
+    "navigation": {
+      "calendar": "Calendrier",
+      "services": "Services",
+      "contact": "Contact",
+      "login": "Connexion"
+    }
+  },
+  "footer": {
+    "copyright": "© 2025 DispZen. Tous droits réservés.",
+    "legal": "Mentions légales",
+    "contact": "Contact",
+    "linkedin": "LinkedIn"
+  },
+  "button": {
+    "book": "Réserver"
+  },
+  "providers": {
+    "search": {
+      "placeholder": "Rechercher un provider..."
+    },
+    "status": {
+      "loading": "Chargement...",
+      "error": "Erreur lors du chargement."
+    },
+    "pagination": {
+      "previous": "Précédent",
+      "next": "Suivant"
+    }
+  },
+  "providerServices": {
+    "title": "Nos préstations",
+    "subtitle": "Liste des services proposés par ce provider.",
+    "table": {
+      "headers": {
+        "name": "Nom",
+        "description": "Description",
+        "price": "Prix",
+        "action": "Action"
+      }
+    }
+  },
+  "booking": {
+    "title": "Réserver un rendez-vous",
+    "subtitle": "Choisissez la date et l'heure qui vous conviennent le mieux.",
+    "success": "Votre rendez-vous a été confirmé avec succès ! Vous allez être redirigé...",
+    "error": "Une erreur s'est produite lors de la réservation. Veuillez réessayer.",
+    "serviceInfo": {
+      "title": "Informations du service",
+      "serviceName": "Service",
+      "price": "Prix",
+      "duration": "Durée",
+      "minutes": "minutes",
+      "provider": "Prestataire",
+      "description": "Description"
+    },
+    "form": {
+      "date": "Date souhaitée",
+      "time": "Heure souhaitée",
+      "notes": "Notes additionnelles",
+      "notesPlaceholder": "Informations complémentaires, demandes particulières...",
+      "noSlotsAvailable": "Aucun créneau disponible pour cette date",
+      "cancel": "Annuler",
+      "confirm": "Confirmer la réservation",
+      "submitting": "Réservation en cours..."
+    }
+  },
+  "appointments": {
+    "title": "Mes rendez-vous",
+    "subtitle": "Consultez et gérez vos rendez-vous à venir.",
+    "error": "Erreur lors du chargement des rendez-vous.",
+    "status": {
+      "confirmed": "Confirmé",
+      "pending": "En attente",
+      "cancelled": "Annulé"
+    },
+    "actions": {
+      "modify": "Modifier",
+      "cancel": "Annuler",
+      "cancelling": "Annulation..."
+    },
+    "noAppointments": {
+      "title": "Aucun rendez-vous",
+      "subtitle": "Vous n'avez pas encore de rendez-vous programmé.",
+      "bookNow": "Réserver maintenant"
+    }
   }
 }

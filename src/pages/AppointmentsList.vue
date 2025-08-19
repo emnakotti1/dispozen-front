@@ -1,0 +1,400 @@
+<template>
+  <!-- Arrière-plan -->
+  <div class="fixed inset-0 -z-10">
+    <div
+      class="absolute inset-0 bg-cover bg-center"
+      :style="{ backgroundImage: `url(${arriere})` }"
+    ></div>
+  </div>
+
+  <!-- Contenu principal -->
+  <div class="relative z-10 flex justify-center px-4 sm:px-6 lg:px-8 py-10">
+    <div
+      class="w-full max-w-6xl bg-white bg-opacity-90 backdrop-blur-md rounded-lg shadow-xl p-8"
+    >
+      <!-- Header -->
+      <div class="mb-6">
+        <h1 class="text-2xl font-bold text-gray-900">
+          {{ t('appointments.title') }}
+        </h1>
+        <p class="mt-2 text-gray-600">
+          {{ t('appointments.subtitle') }}
+        </p>
+      </div>
+
+      <!-- Message de succès -->
+      <div
+        v-if="showSuccess"
+        class="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg"
+      >
+        <div class="flex items-center">
+          <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              fill-rule="evenodd"
+              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+          {{ successMessage }}
+        </div>
+      </div>
+
+      <!-- Loading / Error -->
+      <div v-if="isLoading" class="text-center text-gray-500">
+        {{ t('common.loading') }}
+      </div>
+      <div v-else-if="isError" class="text-center text-red-500">
+        {{ t('appointments.error') }}
+      </div>
+
+      <!-- Liste des rendez-vous -->
+      <div v-else class="space-y-4">
+        <div
+          v-for="appointment in appointments"
+          :key="appointment.id"
+          class="bg-white border border-gray-200 rounded-lg shadow-sm p-6"
+        >
+          <div
+            class="flex flex-col md:flex-row md:items-center md:justify-between"
+          >
+            <div class="flex-1">
+              <div class="flex items-center space-x-2 mb-2">
+                <router-link
+                  :to="`/appointments/${appointment.id}`"
+                  class="text-lg font-semibold text-indigo-600 hover:text-indigo-800 underline decoration-dotted transition-colors cursor-pointer"
+                  title="Voir les détails de la réservation"
+                >
+                  {{ appointment.service.name }}
+                </router-link>
+                <span
+                  :class="[
+                    'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
+                    appointment.status === 'confirmed'
+                      ? 'bg-green-100 text-green-800'
+                      : appointment.status === 'pending'
+                      ? 'bg-yellow-100 text-yellow-800'
+                      : 'bg-red-100 text-red-800',
+                  ]"
+                >
+                  {{ getStatusText(appointment.status) }}
+                </span>
+              </div>
+
+              <div
+                class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600"
+              >
+                <div class="flex items-center">
+                  <svg
+                    class="w-4 h-4 mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    ></path>
+                  </svg>
+                  {{
+                    appointment.calendar
+                      ? formatDate(appointment.calendar.date)
+                      : 'Date non définie'
+                  }}
+                </div>
+
+                <div class="flex items-center">
+                  <svg
+                    class="w-4 h-4 mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    ></path>
+                  </svg>
+                  <span v-if="appointment.calendar">
+                    {{ formatTime(appointment.calendar.startTime) }} -
+                    {{ formatTime(appointment.calendar.endTime) }}
+                  </span>
+                  <span v-else>Heure non définie</span>
+                </div>
+
+                <div class="flex items-center">
+                  <svg
+                    class="w-4 h-4 mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    ></path>
+                  </svg>
+                  {{ appointment.provider.firstName }}
+                  {{ appointment.provider.lastName }}
+                </div>
+
+                <div class="flex items-center">
+                  <svg
+                    class="w-4 h-4 mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
+                    ></path>
+                  </svg>
+                  {{ appointment.service.price }}
+                  {{ appointment.service.currency }}
+                </div>
+              </div>
+
+              <p
+                v-if="appointment.service.description"
+                class="mt-3 text-sm text-gray-600"
+              >
+                {{ appointment.service.description }}
+              </p>
+
+              <p
+                v-if="appointment.notes"
+                class="mt-2 text-sm text-gray-600 italic"
+              >
+                <strong>Notes:</strong> {{ appointment.notes }}
+              </p>
+            </div>
+
+            <div class="mt-4 md:mt-0 md:ml-6 flex flex-col sm:flex-row gap-2">
+              <router-link
+                :to="`/appointments/${appointment.id}`"
+                class="px-4 py-2 text-sm font-medium text-indigo-700 bg-white border border-indigo-300 rounded-md shadow-sm hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-center"
+              >
+                Voir détails
+              </router-link>
+              <button
+                v-if="canModify(appointment)"
+                type="button"
+                @click="openEdit(appointment)"
+                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              >
+                {{ t('appointments.actions.modify') }}
+              </button>
+              <button
+                v-if="
+                  appointment.status !== 'cancelled' &&
+                  appointment.status !== 'confirmed'
+                "
+                type="button"
+                :disabled="isCancelling.value"
+                @click="openCancelModal(appointment)"
+                class="px-4 py-2 text-sm font-medium text-red-700 bg-white border border-red-300 rounded-md shadow-sm hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span v-if="isCancelling">{{
+                  t('appointments.actions.cancelling')
+                }}</span>
+                <span v-else>{{ t('appointments.actions.cancel') }}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Aucun rendez-vous -->
+        <div v-if="appointments?.length === 0" class="text-center py-8">
+          <svg
+            class="mx-auto h-12 w-12 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+            ></path>
+          </svg>
+          <h3 class="mt-2 text-sm font-medium text-gray-900">
+            {{ t('appointments.noAppointments.title') }}
+          </h3>
+          <p class="mt-1 text-sm text-gray-500">
+            {{ t('appointments.noAppointments.subtitle') }}
+          </p>
+          <div class="mt-6">
+            <router-link
+              to="/providers"
+              class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              {{ t('appointments.noAppointments.bookNow') }}
+            </router-link>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Edit Modal -->
+  <AppointmentEditModal
+    :open="isEditOpen"
+    :appointment="
+      selectedAppointment || { id: '', service: {}, calendar: null }
+    "
+    :pending="isUpdating.value"
+    @close="isEditOpen = false"
+    @save="onEditSave"
+  />
+  <ConfirmationModal
+    :open="isCancelOpen"
+    :title="t('appointments.actions.cancel')"
+    :message="cancelMessage"
+    :pending="isCancelling.value"
+    :confirm-label="t('appointments.actions.cancel')"
+    :cancel-label="t('common.close')"
+    @close="isCancelOpen = false"
+    @confirm="confirmCancel"
+  />
+</template>
+
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+import { ref, watch, computed } from 'vue'
+import {
+  useAppointments,
+  useCancelAppointment,
+  useUpdateAppointment,
+} from '../hooksQuerie/appointments'
+import arriere from '../assets/333.jpg'
+import AppointmentEditModal from '../components/AppointmentEditModal.vue'
+import ConfirmationModal from '../components/ConfirmationModal.vue'
+
+const { t } = useI18n()
+
+// Hook pour récupérer les rendez-vous
+const { appointments, isLoading, isError } = useAppointments()
+
+// Hook pour annuler un rendez-vous
+const {
+  cancelAppointment,
+  isLoading: isCancelling,
+  successMessage,
+  showSuccess,
+} = useCancelAppointment()
+
+// Watch pour surveiller les changements dans appointments
+watch(
+  appointments,
+  _ => {
+    // Handle appointments changes
+  },
+  { deep: true },
+)
+
+// Fonction pour confirmer et annuler un rendez-vous
+// Confirmation d'annulation via modal
+const isCancelOpen = ref(false)
+const cancelTargetId = ref<string | null>(null)
+const cancelTargetService = ref<string>('')
+const cancelMessage = computed(
+  () =>
+    `Êtes-vous sûr de vouloir annuler le rendez-vous pour "${cancelTargetService.value}" ?`,
+)
+
+const openCancelModal = (apt: any) => {
+  cancelTargetId.value = apt.id
+  cancelTargetService.value = apt.service?.name || ''
+  isCancelOpen.value = true
+}
+
+const confirmCancel = () => {
+  if (!cancelTargetId.value) return
+  cancelAppointment(cancelTargetId.value)
+  isCancelOpen.value = false
+}
+
+// Fonction pour formater la date
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString)
+  return date.toLocaleDateString('fr-FR', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+}
+
+// Fonction pour formater l'heure (enlever les secondes)
+const formatTime = (timeString: string) => {
+  if (!timeString) return ''
+  // Si le format est HH:MM:SS, on enlève les secondes
+  return timeString.substring(0, 5) // Garde seulement HH:MM
+}
+
+// Fonction pour obtenir le texte du statut
+const getStatusText = (status: string) => {
+  switch (status) {
+    case 'confirmed':
+      return t('appointments.status.confirmed')
+    case 'pending':
+      return t('appointments.status.pending')
+    case 'cancelled':
+      return t('appointments.status.cancelled')
+    default:
+      return status
+  }
+}
+
+// Règle des 24h: modification possible uniquement si le début est dans >= 24h
+const canModify = (appointment: any) => {
+  const cal = appointment?.calendar
+  if (!cal?.date || !cal?.startTime) return false
+  // Construire une date ISO sûre
+  const startTime =
+    cal.startTime.length === 5 ? `${cal.startTime}:00` : cal.startTime
+  const start = new Date(`${cal.date}T${startTime}`)
+  if (Number.isNaN(start.getTime())) return false
+  const now = new Date()
+  const diffMs = start.getTime() - now.getTime()
+  const hours = diffMs / (1000 * 60 * 60)
+  return hours >= 24
+}
+
+// Edition rendez-vous
+const isEditOpen = ref(false)
+const selectedAppointment = ref<any | null>(null)
+const { updateAppointment: updateAppointmentMut, isPending: isUpdating } =
+  useUpdateAppointment()
+
+const openEdit = (apt: any) => {
+  selectedAppointment.value = apt
+  isEditOpen.value = true
+}
+
+const onEditSave = async (payload: {
+  date: string
+  startTime: string
+  endTime?: string
+  notes?: string
+}) => {
+  if (!selectedAppointment.value?.id) return
+  try {
+    await updateAppointmentMut(selectedAppointment.value.id, payload)
+    isEditOpen.value = false
+  } catch (e: any) {
+    alert(
+      e?.message ||
+        'Impossible de mettre à jour le rendez-vous (règle des 24h côté serveur?).',
+    )
+  }
+}
+</script>
