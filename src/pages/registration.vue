@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import { RouterLink, useRouter } from "vue-router";
-import logo from "../assets/logo.png";
-import { useI18n } from "vue-i18n";
-import LanguageSelector from "../components/LanguageSelector.vue";
-import { ref } from "vue";
-import { useCreateUserMutation } from "../hooksQuerie/users";
+import { RouterLink, useRouter } from 'vue-router'
+import logo from '../assets/logo.png'
+import { useI18n } from 'vue-i18n'
+import LanguageSelector from '../components/LanguageSelector.vue'
+import { ref } from 'vue'
+import { useCreateUserMutation } from '../hooksQuerie/users'
 
-const { t } = useI18n();
-const router = useRouter();
+const { t } = useI18n({ useScope: 'global' })
+const router = useRouter()
 
 // Champs du formulaire
-const firstName = ref("");
-const lastName = ref("");
-const phoneNumber = ref("");
-const email = ref("");
-const password = ref("");
+const firstName = ref('')
+const lastName = ref('')
+const phoneNumber = ref('')
+const email = ref('')
+const password = ref('')
 
 // Mutation
 const {
@@ -22,10 +22,10 @@ const {
   isPending,
   isError,
   error,
-} = useCreateUserMutation();
+} = useCreateUserMutation()
 
 function handleSubmit(e: Event) {
-  e.preventDefault();
+  e.preventDefault()
 
   createUser(
     {
@@ -37,10 +37,10 @@ function handleSubmit(e: Event) {
     },
     {
       onSuccess: () => {
-        router.push("/login"); // ou afficher un message
+        router.push('/login') // ou afficher un message
       },
-    }
-  );
+    },
+  )
 }
 </script>
 
@@ -56,15 +56,15 @@ function handleSubmit(e: Event) {
           </div>
           <img class="h-16 w-auto mx-auto" :src="logo" alt="Logo" />
           <h2 class="mt-8 text-2xl font-bold tracking-tight text-gray-900">
-            {{ t("message.auth.registration.title") }}
+            {{ t('message.auth.registration.title') }}
           </h2>
           <p class="mt-2 text-sm text-gray-500">
-            {{ t("message.auth.registration.subtitle") }}
+            {{ t('message.auth.registration.subtitle') }}
             <RouterLink
               to="/login"
               class="font-semibold text-indigo-600 hover:text-indigo-500"
             >
-              {{ t("message.auth.registration.signIn") }}
+              {{ t('message.auth.registration.signIn') }}
             </RouterLink>
           </p>
         </div>
@@ -75,7 +75,7 @@ function handleSubmit(e: Event) {
               for="firstName"
               class="block text-sm font-medium text-gray-900"
             >
-              {{ t("message.auth.registration.firstName") }}
+              {{ t('message.auth.registration.firstName') }}
             </label>
             <input
               id="firstName"
@@ -92,7 +92,7 @@ function handleSubmit(e: Event) {
               for="lastName"
               class="block text-sm font-medium text-gray-900"
             >
-              {{ t("message.auth.registration.lastName") }}
+              {{ t('message.auth.registration.lastName') }}
             </label>
             <input
               id="lastName"
@@ -109,7 +109,7 @@ function handleSubmit(e: Event) {
               for="phoneNumber"
               class="block text-sm font-medium text-gray-900"
             >
-              {{ t("message.auth.registration.phoneNumber") }}
+              {{ t('message.auth.registration.phoneNumber') }}
             </label>
             <input
               id="phoneNumber"
@@ -123,7 +123,7 @@ function handleSubmit(e: Event) {
 
           <div>
             <label for="email" class="block text-sm font-medium text-gray-900">
-              {{ t("message.auth.registration.email") }}
+              {{ t('message.auth.registration.email') }}
             </label>
             <input
               id="email"
@@ -140,7 +140,7 @@ function handleSubmit(e: Event) {
               for="password"
               class="block text-sm font-medium text-gray-900"
             >
-              {{ t("message.auth.registration.password") }}
+              {{ t('message.auth.registration.password') }}
             </label>
             <input
               id="password"
@@ -160,12 +160,12 @@ function handleSubmit(e: Event) {
             >
               {{
                 isPending
-                  ? t("common.loading")
-                  : t("message.auth.registration.createAccount")
+                  ? t('common.loading')
+                  : t('message.auth.registration.createAccount')
               }}
             </button>
             <p v-if="isError" class="mt-2 text-sm text-red-600">
-              {{ error?.message || "Une erreur est survenue" }}
+              {{ error?.message || 'Une erreur est survenue' }}
             </p>
           </div>
         </form>

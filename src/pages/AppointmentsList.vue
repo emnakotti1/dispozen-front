@@ -278,7 +278,7 @@ import arriere from '../assets/333.jpg'
 import AppointmentEditModal from '../components/AppointmentEditModal.vue'
 import ConfirmationModal from '../components/ConfirmationModal.vue'
 
-const { t } = useI18n()
+const { t } = useI18n({ useScope: 'global' })
 
 // Hook pour récupérer les rendez-vous
 const { appointments, isLoading, isError } = useAppointments()

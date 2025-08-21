@@ -289,7 +289,7 @@ import { useProviderUnavailabilities } from '../hooksQuerie/calendar'
 import arriere from '../assets/333.jpg'
 
 const route = useRoute()
-const { t } = useI18n()
+const { t } = useI18n({ useScope: 'global' })
 
 // Récupération des paramètres de l'URL
 const providerId = route.params.providerId as string

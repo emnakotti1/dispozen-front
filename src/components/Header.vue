@@ -157,7 +157,7 @@ import { useRouter } from 'vue-router'
 import { useAuth } from '../composables/useAuth'
 import logo from '../assets/logo.png'
 
-const { t } = useI18n()
+const { t } = useI18n({ useScope: 'global' })
 const router = useRouter()
 const mobileMenuOpen = ref(false)
 

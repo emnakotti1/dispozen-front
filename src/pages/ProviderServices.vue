@@ -104,7 +104,7 @@ import arriere from '../assets/333.jpg'
 
 const route = useRoute()
 const providerId = route.params.id as string
-const { t } = useI18n()
+const { t } = useI18n({ useScope: 'global' })
 
 const { services, isLoading, isError } = useProviderServicesQuery(providerId)
 </script>

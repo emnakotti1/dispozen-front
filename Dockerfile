@@ -29,8 +29,8 @@ RUN mkdir -p /usr/share/nginx/html/locales/fr \
 COPY locales/fr.json /usr/share/nginx/html/locales/fr/translation.json
 COPY locales/en.json /usr/share/nginx/html/locales/en/translation.json
 
-# Copier la configuration Nginx si besoin
-# COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copier la configuration Nginx pour proxy /api et /uploads vers le backend
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Exposer le port 80
 EXPOSE 80

@@ -40,97 +40,97 @@
       "services": "Services",
       "contact": "Contact",
       "login": "Log in"
+    }
+  },
+  "footer": {
+    "copyright": "© 2025 DispZen. All rights reserved.",
+    "legal": "Legal Notice",
+    "contact": "Contact",
+    "linkedin": "LinkedIn"
+  },
+  "common": {
+    "loading": "Loading...",
+    "navigation": {
+      "services": "Our Services"
     },
-    "footer": {
-      "copyright": "© 2025 DispZen. All rights reserved.",
-      "legal": "Legal Notice",
-      "contact": "Contact",
-      "linkedin": "LinkedIn"
+    "error": {
+      "loadingServices": "Error loading services."
     },
-    "common": {
+    "noData": {
+      "services": "No services found."
+    }
+  },
+  "button": {
+    "book": "Book"
+  },
+  "providers": {
+    "search": {
+      "placeholder": "Search for a provider..."
+    },
+    "status": {
       "loading": "Loading...",
-      "navigation": {
-        "services": "Our Services"
-      },
-      "button": {
-        "book": "Book"
-      },
-      "error": {
-        "loadingServices": "Error loading services."
-      },
-      "noData": {
-        "services": "No services found."
-      }
+      "error": "Error loading data."
     },
-    "providers": {
-      "search": {
-        "placeholder": "Search for a provider..."
-      },
-      "status": {
-        "loading": "Loading...",
-        "error": "Error loading data."
-      },
-      "pagination": {
-        "previous": "Previous",
-        "next": "Next"
-      }
-    },
-    "providerServices": {
-      "title": "Provider Services",
-      "subtitle": "List of services offered by this provider.",
-      "table": {
-        "headers": {
-          "name": "Name",
-          "description": "Description",
-          "price": "Price",
-          "action": "Action"
-        }
-      }
-    },
-    "booking": {
-      "title": "Book an Appointment",
-      "subtitle": "Choose the date and time that works best for you.",
-      "success": "Your appointment has been successfully confirmed! You will be redirected...",
-      "error": "An error occurred while booking. Please try again.",
-      "serviceInfo": {
-        "title": "Service Information",
-        "serviceName": "Service",
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next"
+    }
+  },
+  "providerServices": {
+    "title": "Provider Services",
+    "subtitle": "List of services offered by this provider.",
+    "table": {
+      "headers": {
+        "name": "Name",
+        "description": "Description",
         "price": "Price",
-        "duration": "Duration",
-        "minutes": "minutes",
-        "provider": "Provider",
-        "description": "Description"
-      },
-      "form": {
-        "date": "Preferred Date",
-        "time": "Preferred Time",
-        "notes": "Additional Notes",
-        "notesPlaceholder": "Additional information, special requests...",
-        "noSlotsAvailable": "No time slots available for this date",
-        "cancel": "Cancel",
-        "confirm": "Confirm Booking",
-        "submitting": "Booking in progress..."
+        "action": "Action"
       }
+    }
+  },
+  "booking": {
+    "title": "Book an Appointment",
+    "subtitle": "Choose the date and time that works best for you.",
+    "success": "Your appointment has been successfully confirmed! You will be redirected...",
+    "error": "An error occurred while booking. Please try again.",
+    "serviceInfo": {
+      "title": "Service Information",
+      "serviceName": "Service",
+      "price": "Price",
+      "duration": "Duration",
+      "minutes": "minutes",
+      "provider": "Provider",
+      "description": "Description"
     },
-    "appointments": {
-      "title": "My Appointments",
-      "subtitle": "View and manage your upcoming appointments.",
-      "error": "Error loading appointments.",
-      "status": {
-        "confirmed": "Confirmed",
-        "pending": "Pending",
-        "cancelled": "Cancelled"
-      },
-      "actions": {
-        "modify": "Modify",
-        "cancel": "Cancel",
-        "cancelling": "Cancelling..."
-      },
-      "noAppointments": {
-        "title": "No appointments",
-        "subtitle": "You don't have any scheduled appointments yet.",
-        "bookNow": "Book now"
-      }
+    "form": {
+      "date": "Preferred Date",
+      "time": "Preferred Time",
+      "notes": "Additional Notes",
+      "notesPlaceholder": "Additional information, special requests...",
+      "noSlotsAvailable": "No time slots available for this date",
+      "cancel": "Cancel",
+      "confirm": "Confirm Booking",
+      "submitting": "Booking in progress..."
+    }
+  },
+  "appointments": {
+    "title": "My Appointments",
+    "subtitle": "View and manage your upcoming appointments.",
+    "error": "Error loading appointments.",
+    "status": {
+      "confirmed": "Confirmed",
+      "pending": "Pending",
+      "cancelled": "Cancelled"
+    },
+    "actions": {
+      "modify": "Modify",
+      "cancel": "Cancel",
+      "cancelling": "Cancelling..."
+    },
+    "noAppointments": {
+      "title": "No appointments",
+      "subtitle": "You don't have any scheduled appointments yet.",
+      "bookNow": "Book now"
     }
   }
 }

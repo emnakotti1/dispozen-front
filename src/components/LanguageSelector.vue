@@ -55,7 +55,7 @@
 import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-const { locale } = useI18n()
+const { locale } = useI18n({ useScope: 'global' })
 const currentLocale = ref(locale.value)
 const isDropdownOpen = ref(false)
 
@@ -68,11 +68,38 @@ const toggleDropdown = () => {
   isDropdownOpen.value = !isDropdownOpen.value
 }
 
-const selectLanguage = langCode => {
-  currentLocale.value = langCode
-  locale.value = langCode
-  localStorage.setItem('preferred-locale', langCode)
+const selectLanguage = async langCode => {
+  const norm = (langCode || '').toLowerCase().split('-')[0]
+  const final = ['fr', 'en'].includes(norm) ? norm : 'fr'
+  currentLocale.value = final
+  locale.value = final
+  localStorage.setItem('preferred-locale', final)
   isDropdownOpen.value = false
+
+  // Ensure messages for the selected locale are loaded (uses global instance exposed on window)
+  try {
+    const res = await fetch(`/locales/${final}/translation.json`, {
+      headers: { 'Content-Type': 'application/json' },
+    })
+    if (res.ok) {
+      const msgs = await res.json()
+  const i18n = window.__i18n
+      if (i18n) {
+        i18n.global.mergeLocaleMessage(final, msgs)
+        // Also merge flattened for dotted paths
+        const flatten = (obj, p = '') =>
+          Object.entries(obj || {}).reduce((acc, [k, v]) => {
+            const key = p ? `${p}.${k}` : k
+            if (v && typeof v === 'object') Object.assign(acc, flatten(v, key))
+            else acc[key] = v
+            return acc
+          }, {})
+        i18n.global.mergeLocaleMessage(final, flatten(msgs))
+      }
+    }
+  } catch (e) {
+    console.debug('i18n load on switch failed', e)
+  }
 }
 
 const getCurrentFlag = () => {
@@ -91,11 +118,11 @@ const changeLanguage = () => {
 }
 
 onMounted(() => {
-  const savedLocale = localStorage.getItem('preferred-locale')
-  if (savedLocale) {
-    currentLocale.value = savedLocale
-    locale.value = savedLocale
-  }
+  const saved = localStorage.getItem('preferred-locale')
+  const norm = (saved || '').toLowerCase().split('-')[0]
+  const final = ['fr', 'en'].includes(norm) ? norm : 'fr'
+  currentLocale.value = final
+  locale.value = final
 
   // Fermer le dropdown si on clique ailleurs
   document.addEventListener('click', e => {

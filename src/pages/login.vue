@@ -4,10 +4,11 @@ import { RouterLink, useRouter } from 'vue-router'
 import logo from '../assets/logo.png'
 import { useI18n } from 'vue-i18n'
 import LanguageSelector from '../components/LanguageSelector.vue'
+import DebugI18n from '../components/DebugI18n.vue'
 import { useLoginMutation } from '../hooksQuerie/auth'
 import { useAuth } from '../composables/useAuth'
 
-const { t } = useI18n()
+const { t } = useI18n({ useScope: 'global' })
 const router = useRouter()
 
 const email = ref('')
@@ -46,6 +47,7 @@ function handleSubmit(e: Event) {
       class="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24"
     >
       <div class="mx-auto w-full max-w-sm lg:w-96">
+        <DebugI18n />
         <!-- Logo et titre -->
         <div class="text-center">
           <div class="flex justify-end mb-4">
