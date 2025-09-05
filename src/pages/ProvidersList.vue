@@ -1,27 +1,27 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { ArrowLongLeftIcon, ArrowLongRightIcon } from '@heroicons/vue/20/solid'
-import { PhoneIcon } from '@heroicons/vue/24/solid'
-import { useProvidersQuery } from '../hooksQuerie/useProvidersQuery'
-import arriere from '../assets/333.jpg'
-const { t } = useI18n({ useScope: 'global' })
-const searchQuery = ref('')
-const debouncedSearchQuery = ref('')
-const limit = 6
+import { ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
+import { ArrowLongLeftIcon, ArrowLongRightIcon } from "@heroicons/vue/20/solid";
+import { PhoneIcon } from "@heroicons/vue/24/solid";
+import { useProvidersQuery } from "../hooksQuerie/useProvidersQuery";
+import arriere from "../assets/333.jpg";
+const { t } = useI18n({ useScope: "global" });
+const searchQuery = ref("");
+const debouncedSearchQuery = ref("");
+const limit = 6;
 
 // Debounce search to avoid too many API calls
-let debounceTimeout: ReturnType<typeof setTimeout>
+let debounceTimeout: ReturnType<typeof setTimeout>;
 watch(
   searchQuery,
-  newValue => {
-    clearTimeout(debounceTimeout)
+  (newValue) => {
+    clearTimeout(debounceTimeout);
     debounceTimeout = setTimeout(() => {
-      debouncedSearchQuery.value = newValue
-    }, 300) // 300ms debounce
+      debouncedSearchQuery.value = newValue;
+    }, 300); // 300ms debounce
   },
-  { immediate: true },
-)
+  { immediate: true }
+);
 
 const {
   data,
@@ -32,15 +32,16 @@ const {
   prevPage,
   isFetching,
   resetPage,
-} = useProvidersQuery(limit, debouncedSearchQuery)
+} = useProvidersQuery(limit, debouncedSearchQuery);
 
 // Reset to page 1 when search changes
 watch(debouncedSearchQuery, () => {
-  resetPage()
-})
+  resetPage();
+});
 
 function getImageUrl(imagePath: string) {
-  return imagePath ? `/${imagePath}` : ''
+  const backendUrl = "http://localhost:3000"; // adapte si besoin
+  return imagePath ? `${backendUrl}/${imagePath}` : "";
 }
 </script>
 
@@ -64,10 +65,10 @@ function getImageUrl(imagePath: string) {
 
     <!-- Status Messages -->
     <div v-if="isLoading" class="text-center relative z-10">
-      {{ t('providers.status.loading') }}
+      {{ t("providers.status.loading") }}
     </div>
     <div v-else-if="isError" class="text-center text-red-500 relative z-10">
-      {{ t('providers.status.error') }}
+      {{ t("providers.status.error") }}
     </div>
 
     <!-- Providers List -->
@@ -101,7 +102,7 @@ function getImageUrl(imagePath: string) {
             :to="`/providers/${provider.id}/services`"
             class="rounded bg-indigo-50 px-3 py-1 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
           >
-            {{ t('common.navigation.services') }}
+            {{ t("common.navigation.services") }}
           </RouterLink>
 
           <!-- Contact Icons -->
@@ -132,7 +133,7 @@ function getImageUrl(imagePath: string) {
           class="mr-3 h-5 w-5 text-gray-400"
           aria-hidden="true"
         />
-        {{ t('providers.pagination.previous') }}
+        {{ t("providers.pagination.previous") }}
       </button>
 
       <button
@@ -140,7 +141,7 @@ function getImageUrl(imagePath: string) {
         :disabled="(data && data.length < limit) || isFetching"
         class="inline-flex items-center border-t-2 border-transparent pl-1 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {{ t('providers.pagination.next') }}
+        {{ t("providers.pagination.next") }}
         <ArrowLongRightIcon
           class="ml-3 h-5 w-5 text-gray-400"
           aria-hidden="true"
