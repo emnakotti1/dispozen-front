@@ -83,7 +83,7 @@ const selectLanguage = async langCode => {
     })
     if (res.ok) {
       const msgs = await res.json()
-  const i18n = window.__i18n
+      const i18n = window.__i18n
       if (i18n) {
         i18n.global.mergeLocaleMessage(final, msgs)
         // Also merge flattened for dotted paths

@@ -68,9 +68,15 @@ async function ensureLocaleLoaded(locale: string) {
       const msgs = await res.json()
       i18n.global.mergeLocaleMessage(locale, msgs)
       i18n.global.mergeLocaleMessage(locale, flattenMessages(msgs))
-      console.log(`[i18n] merged external messages for ${locale}`, Object.keys(msgs))
+      console.log(
+        `[i18n] merged external messages for ${locale}`,
+        Object.keys(msgs),
+      )
     } else {
-      console.warn(`[i18n] failed to fetch external messages for ${locale}:`, res.status)
+      console.warn(
+        `[i18n] failed to fetch external messages for ${locale}:`,
+        res.status,
+      )
     }
   } catch (e) {
     console.warn('[i18n] ensureLocaleLoaded error:', e)
